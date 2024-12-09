@@ -7,6 +7,7 @@ using Masar.Domain;
 using Masar.Infrastructure.ApplicationContext;
 using Masar.Infrastructure.EfRepositories;
 using Masar.Infrastructure.Services;
+using Microsoft.Extensions.Options;
 
 namespace Masar.Infrastructure.IoC
 {
@@ -24,13 +25,10 @@ namespace Masar.Infrastructure.IoC
             var mySqlConnectionStr = configuration.GetConnectionString("ApplicationDBConnection");
             services.AddDbContextPool<ApplicationDbContext>(options =>
             {
-                options.UseMySql(mySqlConnectionStr, ServerVersion.AutoDetect(mySqlConnectionStr), actions =>
-                {
-                    actions.MigrationsHistoryTable("__efmigrationshistory");
-                    actions.EnableRetryOnFailure(5);
-                    actions.CommandTimeout(30);
-                });
+                options.UseSqlServer(mySqlConnectionStr);
             });
+
+
 
             services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>());
             services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));

@@ -29,7 +29,7 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
-        if (context.Database.IsMySql())
+        if (context.Database.IsSqlServer())
             context.Database.Migrate();
     }
     catch (Exception ex)

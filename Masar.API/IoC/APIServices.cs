@@ -57,7 +57,7 @@ namespace Masar.API.IoC
             services.AddScoped<IEmailSender, EmailSender>();
 
 
-            services.AddAutoMapper(typeof(MappingProfile));
+           services.AddAutoMapper(typeof(MappingProfile));
             LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
 
             // return services;
