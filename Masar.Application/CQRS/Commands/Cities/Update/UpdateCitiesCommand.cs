@@ -26,10 +26,10 @@ namespace Masar.Application.Commands
     public class UpdateCitiesCommandHandler : IRequestHandler<UpdateCitiesCommand, CitiesDto>
     {        
         private readonly IMapper _mapper;
-        private readonly IRepository<Cities> _servicesRepository;
+        private readonly IRepository<City> _servicesRepository;
 
         public UpdateCitiesCommandHandler(
-            IRepository<Cities> servicesRepository,
+            IRepository<City> servicesRepository,
             IMapper mapper
             )
         {

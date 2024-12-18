@@ -9,12 +9,12 @@ using Masar.Domain.Enums;
 
 namespace Masar.Application.DTOs
 {
-    public class ApplicationUserRolesDto : IMapFrom<ApplicationUserRoles>
+    public class ApplicationUserRolesDto : IMapFrom<ApplicationUserRole>
     {
         public int RoleId { get; set; }
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<ApplicationUserRolesDto, ApplicationUserRoles>().ReverseMap();
+            profile.CreateMap<ApplicationUserRolesDto, ApplicationUserRole>().ReverseMap();
         }
     }
 }

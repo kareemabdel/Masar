@@ -52,29 +52,12 @@ namespace Masar.Api.Controllers.LookupControllers
         }
 
 
-        [HttpPost("AddToGallery")]
-        [MapToApiVersion("1")]
-        [Authorize(Roles = Policies.Admin)]
-        public async Task<ActionResult<TripDto>> AddToGallery([FromForm] List<GalleryDto> objsDto)
-        {
-            try
-            {
-                var userid= _currentUserService.GetUserId();
-                objsDto = await UploadFiles(objsDto);
-                var response = await _mediator.Send(new AddGalleryCommand() { objs = objsDto,UserId=userid });
-                return Ok(response);
-            }
-            catch (System.Exception ex)
-            {
-                _loggerManager.LogError($"Something Went Wrong: {ex}");
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
-        }
+        
 
         [HttpDelete]
         [MapToApiVersion("1")]
         [Authorize(Roles = Policies.Admin)]
-        public async Task<ActionResult<bool>> DeleteCities([FromQuery] Guid Id,string FilePath)
+        public async Task<IActionResult> DeleteCities([FromQuery] Guid Id,string FilePath)
         {
             try
             {

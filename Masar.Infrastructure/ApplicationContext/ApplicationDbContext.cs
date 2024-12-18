@@ -18,13 +18,12 @@ namespace Masar.Infrastructure.ApplicationContext
         }
 
 
-        public virtual DbSet<Cities> Cities { get; set; }
-        public DbSet<ApplicationUser> ApplicationUser { get; set; }
-        public DbSet<ApplicationUserRoles> ApplicationUserRole { get; set; }
-        public DbSet<Role> Role { get; set; }
-        public DbSet<Trip> Trips { get; set; }
-        public DbSet<Gallery> Gallery { get; set; }
-        public DbSet<CompanySetting> CompanySetting { get; set; }
+        public virtual DbSet<City> Cities { get; set; }
+        public DbSet<ApplicationUser> ApplicationUsers { get; set; }
+        public DbSet<ApplicationUserRole> ApplicationUserRoles { get; set; }
+        public DbSet<Role> Roles { get; set; }  
+        public DbSet<Gallery> Galleries { get; set; }
+        public DbSet<CompanySetting> CompanySettings { get; set; }
         public DbSet<ContactUs> ContactUs { get; set; }
         public DbSet<AuditTrial> AuditTrial { get; set; }
 
@@ -39,8 +38,11 @@ namespace Masar.Infrastructure.ApplicationContext
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            //modelBuilder.Entity<UserTrip>().HasOne(g => g.User).WithMany(p => p.UserTrips).HasForeignKey(p => p.UserId).OnDelete(DeleteBehavior.NoAction);
+            //     modelBuilder.Entity<City>().Property(p => p.CreationDate)
+            //.HasDefaultValueSql("GETDATE()");
             modelBuilder.Seed();
-            modelBuilder.Entity<ApplicationUserRoles>().HasKey(c => new { c.UserId, c.RoleId });
+            modelBuilder.Entity<ApplicationUserRole>().HasKey(c => new { c.UserId, c.RoleId });
         }
     }
 }

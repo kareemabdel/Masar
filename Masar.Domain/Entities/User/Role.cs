@@ -12,7 +12,7 @@ namespace Masar.Domain.Entities
     {
         public Role()
         {
-            RoleUsers = new List<ApplicationUserRoles>();
+            RoleUsers = new List<ApplicationUserRole>();
         }
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -27,6 +27,6 @@ namespace Masar.Domain.Entities
         [MaxLength(20)]
         public string NameAr { get; set; }
 
-        public virtual ICollection<ApplicationUserRoles> RoleUsers { get; set; }
+        public virtual ICollection<ApplicationUserRole> RoleUsers { get; set; }
     }
 }

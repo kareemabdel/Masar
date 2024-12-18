@@ -9,13 +9,12 @@ namespace Masar.Application.Interfaces
     public interface IApplicationDbContext
     {
 
-        DbSet<Cities> Cities { get; set; }
-        DbSet<ApplicationUser> ApplicationUser { get; set; }
-        DbSet<ApplicationUserRoles> ApplicationUserRole { get; set; }
-        DbSet<Role> Role { get; set; }
-        DbSet<Trip> Trips { get; set; }
-        DbSet<Gallery> Gallery { get; set; }
-        DbSet<CompanySetting> CompanySetting { get; set; }
+        DbSet<City> Cities { get; set; }
+        DbSet<ApplicationUser> ApplicationUsers { get; set; }
+        DbSet<ApplicationUserRole> ApplicationUserRoles { get; set; }
+        DbSet<Role> Roles { get; set; } 
+        DbSet<Gallery> Galleries { get; set; }
+        DbSet<CompanySetting> CompanySettings { get; set; }
         DbSet<ContactUs> ContactUs { get; set; }
         DbSet<AuditTrial> AuditTrial { get; set; }
 

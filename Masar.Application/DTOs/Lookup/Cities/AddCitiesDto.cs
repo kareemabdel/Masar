@@ -7,14 +7,14 @@ using Masar.Domain.Entities;
 
 namespace Masar.Application.DTOs
 {
-    public class AddCitiesDto : IMapFrom<Cities>
+    public class AddCitiesDto : IMapFrom<City>
     {
         public string Code { get; set; }
         public string EnglishDescription { get; set; }
         public string ArabicDescription { get; set; }
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<AddCitiesDto, Cities>().ReverseMap();
+            profile.CreateMap<AddCitiesDto, City>().ReverseMap();
         }
     }
 }

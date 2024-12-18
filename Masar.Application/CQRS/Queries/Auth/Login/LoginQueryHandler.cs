@@ -12,14 +12,14 @@ namespace Masar.Application.Queries.Auth.Login
     {
        // private readonly IValidator<LoginQuery> _validator;
         private readonly IRepository<Domain.Entities.ApplicationUser> _userRepository;
-        private readonly IRepository<Domain.Entities.ApplicationUserRoles> _userRolesRepository;
+        private readonly IRepository<Domain.Entities.ApplicationUserRole> _userRolesRepository;
         private readonly IMapper _mapper;
         //private readonly ILogger _logger;
 
         public LoginQueryHandler(
        //ILogger logger,
       IRepository<Domain.Entities.ApplicationUser> userRepository,
-      IRepository<Domain.Entities.ApplicationUserRoles> userRolesRepository,
+      IRepository<Domain.Entities.ApplicationUserRole> userRolesRepository,
 
        IMapper mapper)
        //IValidator<LoginQuery> validator)
@@ -45,7 +45,7 @@ namespace Masar.Application.Queries.Auth.Login
                 //    //Msg = validation.ToString()
                 //};
            // }
-            var user = await _userRepository.TableNoTracking.Include(e=>e.UserTrips).Include(e => e.UserRoles.
+            var user = await _userRepository.TableNoTracking.Include(e => e.UserRoles.
             Where(e => e.RoleId == (int)request.UserType)).
             Where(p => p.Phone == request.UserName
             || p.UserName == request.UserName ||

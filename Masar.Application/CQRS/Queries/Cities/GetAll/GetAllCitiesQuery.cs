@@ -26,9 +26,9 @@ namespace Masar.Application.Queries
     public class GetAllCitiesQueryHandler :IRequestHandler<GetAllCitiesQuery, IEnumerable<CitiesDto>>
     {
         private readonly IMapper _mapper;
-        private readonly IRepository<Cities> _CitiesRepository;
+        private readonly IRepository<City> _CitiesRepository;
         private readonly IStringLocalizer<GetAllCitiesQuery> _localizer;
-        public GetAllCitiesQueryHandler(IMapper mapper, IRepository<Cities> CitiesRepository, IStringLocalizer<GetAllCitiesQuery> localizer)
+        public GetAllCitiesQueryHandler(IMapper mapper, IRepository<City> CitiesRepository, IStringLocalizer<GetAllCitiesQuery> localizer)
         {
             _mapper = mapper;
             _CitiesRepository = CitiesRepository;

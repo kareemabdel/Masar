@@ -33,7 +33,7 @@ namespace Masar.Application.Commands
             if (!await IsUserExists(item))
             {
                 // add default role
-                item.UserRoles.Add(new ApplicationUserRoles { RoleId = (int)UserTypes.User });
+                item.UserRoles.Add(new ApplicationUserRole { RoleId = (int)UserTypes.User });
                 var result = _servicesRepository.InsertWithEntityReturn(item);
                 return new LoginQueryResponse
                 {

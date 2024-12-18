@@ -18,8 +18,8 @@ namespace Masar.Infrastructure.Seed
               new Role { Id = (int)UserTypes.User, Name = UserTypes.User.ToString(), NameAr="مستخدم" }
           );
 
-            modelBuilder.Entity<ApplicationUserRoles>().HasData(
-             new ApplicationUserRoles { UserId = Guid.Parse("8667a9bf-c714-43cc-9a3c-fd3981c8a3d8"), RoleId = (int)UserTypes.Admin }
+            modelBuilder.Entity<ApplicationUserRole>().HasData(
+             new ApplicationUserRole { UserId = Guid.Parse("8667a9bf-c714-43cc-9a3c-fd3981c8a3d8"), RoleId = (int)UserTypes.Admin }
          );
 
         }

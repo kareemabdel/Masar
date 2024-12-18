@@ -26,11 +26,11 @@ namespace Masar.Application.Queries
          IRequestHandler<GetCitiesByIdQuery, CitiesDto>
     {
         private readonly IMapper _mapper;
-        private readonly IRepository<Cities> _CitiesRepository;
+        private readonly IRepository<City> _CitiesRepository;
 
         public GetCitiesByIdQueryHandler(
             IMapper mapper,
-            IRepository<Cities> CitiesRepository)
+            IRepository<City> CitiesRepository)
         {
             _mapper = mapper;
             _CitiesRepository = CitiesRepository;

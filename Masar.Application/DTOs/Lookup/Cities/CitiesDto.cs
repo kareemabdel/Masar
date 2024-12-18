@@ -7,7 +7,7 @@ using Masar.Domain.Entities;
 
 namespace Masar.Application.DTOs
 {
-    public class CitiesDto : IMapFrom<Cities>
+    public class CitiesDto : IMapFrom<City>
     {
         public Guid Id { get; set; }
         public string Code { get; set; }
@@ -17,7 +17,7 @@ namespace Masar.Application.DTOs
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<CitiesDto, Cities>().ReverseMap();   
+            profile.CreateMap<CitiesDto, City>().ReverseMap();   
         }
     }
 }

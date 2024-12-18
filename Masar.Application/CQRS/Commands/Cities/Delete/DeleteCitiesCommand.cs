@@ -27,9 +27,9 @@ namespace Masar.Application.Commands
     public class DeleteCitiesCommandHandler : IRequestHandler<DeleteCitiesCommand, bool>
     {
         private readonly IMapper _mapper;
-        private readonly IRepository<Cities> _servicesRepository;
+        private readonly IRepository<City> _servicesRepository;
 
-        public DeleteCitiesCommandHandler(IRepository<Cities> servicesRepository, IMapper mapper)
+        public DeleteCitiesCommandHandler(IRepository<City> servicesRepository, IMapper mapper)
         {
             _servicesRepository = servicesRepository;
             _mapper = mapper;

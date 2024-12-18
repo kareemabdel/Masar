@@ -9,7 +9,7 @@ using Masar.Domain.Entities.Comman;
 namespace Masar.Domain.Entities
 {
     [Table("ApplicationUserRole")]
-    public class ApplicationUserRoles:BaseEntity
+    public class ApplicationUserRole:BaseEntity
     {
         public int RoleId { get; set; }
         public Guid UserId { get; set; }

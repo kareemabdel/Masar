@@ -16,7 +16,6 @@ namespace Masar.Application.DTOs
         public string Phone { get; set; }
         public string Email { get; set; }
         public List<ApplicationUserRolesDto>? UserRoles { get; set; }
-        public List<UserTripDto>? UserTrips { get; set; }
         public void Mapping(Profile profile)
         {
             profile.CreateMap<ApplicationUserDto, ApplicationUser>().ReverseMap();
