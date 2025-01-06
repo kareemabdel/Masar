@@ -14,7 +14,7 @@ namespace Masar.Domain.Entities
         public ApplicationUser()
         {
             UserRoles = new List<ApplicationUserRole>();
-           
+            UserTrips = new List<UserTrip>();
         }
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -23,9 +23,10 @@ namespace Masar.Domain.Entities
         public string UserName { get; set; }
         public string Password { get; set; }
         [MaxLength(100)]
-        public string Name { get; set; }   
+        public string Name { get; set; }
         public string Phone { get; set; }
         public string Email { get; set; }
         public virtual ICollection<ApplicationUserRole> UserRoles { get; set; }
+        public virtual ICollection<UserTrip> UserTrips { get; set; }
     }
 }
