@@ -36,7 +36,7 @@ namespace Masar.Api.Controllers.LookupControllers
         #region Methods
 
 
-        [HttpGet("GetAllReservations")]
+        [HttpGet]
         [MapToApiVersion("1")]
         [Authorize(Roles = Policies.Admin)]
         public async Task<ActionResult<List<UserTripDto>>> GetAllReservations()
@@ -89,7 +89,7 @@ namespace Masar.Api.Controllers.LookupControllers
             }
         }
 
-        [HttpPut("UpdateReservation")]
+        [HttpPost("Update")]
         [MapToApiVersion("1")]
         [Authorize]
         public async Task<ActionResult<bool>> UpdateReservation(UpdateUserTripDto objDto)

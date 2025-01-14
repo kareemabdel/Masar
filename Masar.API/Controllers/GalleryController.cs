@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Masar.Infrastructure.Services;
 using Contracts;
 
+
 namespace Masar.Api.Controllers.LookupControllers
 {
     [Route("api/[controller]")]
@@ -35,7 +36,7 @@ namespace Masar.Api.Controllers.LookupControllers
         #endregion
 
         #region Methods
-        [HttpGet("GetGallery")]
+        [HttpGet]
         [MapToApiVersion("1")]
         public async Task<ActionResult<List<GalleryDto>>> GetGallery()
         {
@@ -51,22 +52,19 @@ namespace Masar.Api.Controllers.LookupControllers
             }
         }
 
-
-        
-
-        [HttpDelete]
+        [HttpPost("Delete")]
         [MapToApiVersion("1")]
         [Authorize(Roles = Policies.Admin)]
-        public async Task<IActionResult> DeleteCities([FromQuery] Guid Id,string FilePath)
+        public async Task<IActionResult> DeleteGallery([FromBody] DeleteGalleryDto obj)
         {
             try
             {
-                var fullPath =_rootpath.WebRootPath+ FilePath;
+                var fullPath =_rootpath.WebRootPath+ obj.FilePath;
                 if (System.IO.File.Exists(fullPath))
                 {
                     System.IO.File.Delete(fullPath);
                 }
-                var response = await _mediator.Send(new DeleteGalleryCommand() { Id = Id });
+                var response = await _mediator.Send(new DeleteGalleryCommand() { Id =obj.Id });
                 return Ok(response);
             }
             catch (System.Exception ex)
@@ -74,6 +72,45 @@ namespace Masar.Api.Controllers.LookupControllers
                 _loggerManager.LogError($"Something went wrong: {ex}");
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
 
+            }
+        }
+
+        [HttpPost("AddToGallery")]
+        [MapToApiVersion("1")]
+        [Authorize(Roles = Policies.Admin)]
+        public async Task<ActionResult<TripDto>> AddToGallery([FromForm] List<GalleryDto> objsDto)
+        {
+            try
+            {
+                var userid = _currentUserService.GetUserId();
+                objsDto = await UploadFiles(objsDto);
+                var response = await _mediator.Send(new AddGalleryCommand() { objs = objsDto, UserId = userid });
+                return Ok(response);
+            }
+            catch (System.Exception ex)
+            {
+                _loggerManager.LogError($"Something Went Wrong: {ex}");
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpPost("AddSinglePic")]
+        [MapToApiVersion("1")]
+        [Authorize(Roles = Policies.Admin)]
+        public async Task<ActionResult<TripDto>> AddSinglePic([FromForm] GalleryDto objsDto)
+        {
+            try
+            {
+                var list = new List<GalleryDto> { objsDto };
+                var userid = _currentUserService.GetUserId();
+                list = await UploadFiles(list);
+                var response = await _mediator.Send(new AddGalleryCommand() { objs = list, UserId = userid });
+                return Ok(response);
+            }
+            catch (System.Exception ex)
+            {
+                _loggerManager.LogError($"Something Went Wrong: {ex}");
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 

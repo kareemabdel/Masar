@@ -16,6 +16,9 @@ using System.Net;
 using Masar.Infrastructure.Services;
 using Microsoft.Extensions.Localization;
 using Masar.API;
+using Microsoft.Extensions.Caching.Memory;
+using Masar.API.Helpers;
+using JasperFx.Core;
 
 namespace Masar.Api.Controllers.LookupControllers
 {
@@ -29,14 +32,15 @@ namespace Masar.Api.Controllers.LookupControllers
         private readonly IMediator _mediator;
         private readonly ILoggerManager _loggerManager;
         private readonly ICurrentUserService _userServices;
-
+        private readonly IMemoryCache _memoryCache;
         #endregion
         #region Ctor
-        public CitiesController(IMediator mediator, ILoggerManager loggerManager, ICurrentUserService userServices)
+        public CitiesController(IMediator mediator, ILoggerManager loggerManager, ICurrentUserService userServices, IMemoryCache memoryCache)
         {
             _mediator = mediator;
             _loggerManager = loggerManager;
             _userServices = userServices;
+            _memoryCache = memoryCache;
         }
 
         #endregion
@@ -48,7 +52,17 @@ namespace Masar.Api.Controllers.LookupControllers
         {
             try
             {
-                var response = await _mediator.Send(new GetAllCitiesQuery() { IsAdmin=_userServices.IsAdmin()});
+                if (!_memoryCache.TryGetValue(CacheKeys.Cities, out IEnumerable<CitiesDto>? response))
+                {
+                   response = await _mediator.Send(new GetAllCitiesQuery() { IsAdmin = _userServices.IsAdmin() });
+                    var cacheEntryOptions = new MemoryCacheEntryOptions
+                    {
+                        AbsoluteExpiration = DateTime.Now.AddMinutes(5),
+                        SlidingExpiration = TimeSpan.FromMinutes(2),
+                        Size = 1024,
+                    };
+                    _memoryCache.Set(CacheKeys.Cities, response, cacheEntryOptions);
+                }
                 return Ok(response);
             }
             catch (System.Exception ex)
@@ -75,7 +89,7 @@ namespace Masar.Api.Controllers.LookupControllers
             }
         }
 
-        [HttpPut]
+        [HttpPost("Update")]
         [MapToApiVersion("1")]
         [Authorize(Roles = Policies.Admin)]
         public async Task<ActionResult<CitiesDto>> UpdateCities(CitiesDto objDto)
@@ -93,7 +107,7 @@ namespace Masar.Api.Controllers.LookupControllers
         }
 
 
-        [HttpGet("GetCitiesById")]
+        [HttpGet("GetById")]
         [MapToApiVersion("1")]
         [Authorize]
         public async Task<ActionResult<CitiesDto>> GetCitiesById([FromQuery] Guid Id)
@@ -110,10 +124,10 @@ namespace Masar.Api.Controllers.LookupControllers
             }
         }
 
-        [HttpDelete]
+        [HttpPost("Delete")]
         [MapToApiVersion("1")]
         [Authorize(Roles = Policies.Admin)]
-        public async Task<ActionResult<bool>> DeleteCities([FromQuery] Guid Id)
+        public async Task<ActionResult<bool>> DeleteCities([FromBody] Guid Id)
         {
             try
             {

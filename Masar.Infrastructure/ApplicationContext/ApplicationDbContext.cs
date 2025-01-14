@@ -25,6 +25,8 @@ namespace Masar.Infrastructure.ApplicationContext
         public DbSet<Gallery> Galleries { get; set; }
         public DbSet<CompanySetting> CompanySettings { get; set; }
         public DbSet<ContactUs> ContactUs { get; set; }
+        public DbSet<Trip> Trip { get; set; }
+      
         public DbSet<AuditTrial> AuditTrial { get; set; }
 
 
@@ -38,9 +40,18 @@ namespace Masar.Infrastructure.ApplicationContext
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //modelBuilder.Entity<UserTrip>().HasOne(g => g.User).WithMany(p => p.UserTrips).HasForeignKey(p => p.UserId).OnDelete(DeleteBehavior.NoAction);
-            //     modelBuilder.Entity<City>().Property(p => p.CreationDate)
-            //.HasDefaultValueSql("GETDATE()");
+            modelBuilder.Entity<UserTrip>()
+                .HasOne(g => g.Trip)
+                .WithMany(p => p.UserTrips)
+                .HasForeignKey(p => p.TripId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<UserTripStatusHistory>()
+               .HasOne(g => g.UserTrip)
+               .WithMany(p => p.UserTripStatusHistory)
+               .HasForeignKey(p => p.UserTripId)
+               .OnDelete(DeleteBehavior.NoAction);
+
             modelBuilder.Seed();
             modelBuilder.Entity<ApplicationUserRole>().HasKey(c => new { c.UserId, c.RoleId });
         }

@@ -15,7 +15,7 @@ builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.ConfigureLoggerServices();
 builder.Services.ConfiguareLocalizationServices();
 builder.Services.AddAuthSrvices(builder.Configuration);
-
+builder.Services.AddMemoryCache();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

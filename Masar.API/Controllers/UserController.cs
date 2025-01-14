@@ -67,7 +67,7 @@ namespace Masar.Api.Controllers.LookupControllers
             }
         }
 
-        [HttpPut]
+        [HttpPost("Update")]
         [MapToApiVersion("1")]
         [Authorize(Roles = Policies.Admin)]
         public async Task<ActionResult<ApplicationUserDto>> UpdateApplicationUser(ApplicationUserDto objDto)
@@ -85,7 +85,7 @@ namespace Masar.Api.Controllers.LookupControllers
         }
 
 
-        [HttpGet("GetUserById")]
+        [HttpGet("GetById")]
         [MapToApiVersion("1")]
         [Authorize]
         public async Task<ActionResult<ApplicationUserDto>> GetApplicationUserById([FromQuery] Guid Id)
@@ -102,10 +102,10 @@ namespace Masar.Api.Controllers.LookupControllers
             }
         }
 
-        [HttpDelete]
+        [HttpPost("Delete")]
         [MapToApiVersion("1")]
         [Authorize(Roles = Policies.Admin)]
-        public async Task<ActionResult<bool>> DeleteApplicationUser([FromQuery] Guid Id)
+        public async Task<ActionResult<bool>> DeleteApplicationUser([FromBody] Guid Id)
         {
             try
             {

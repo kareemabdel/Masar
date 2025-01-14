@@ -74,7 +74,7 @@ namespace Masar.Api.Controllers.LookupControllers
             }
         }
 
-        [HttpPut]
+        [HttpPost("Update")]
         [MapToApiVersion("1")]
         //[Authorize(Roles = Policies.Admin)]
         public async Task<ActionResult<TripDto>> UpdateTrip( TripDto objDto)
@@ -109,10 +109,10 @@ namespace Masar.Api.Controllers.LookupControllers
             }
         }
 
-        [HttpDelete]
+        [HttpPost("Delete")]
         [MapToApiVersion("1")]
         [Authorize(Roles = Policies.Admin)]
-        public async Task<ActionResult<bool>> DeleteTrip([FromQuery] Guid Id)
+        public async Task<ActionResult<bool>> DeleteTrip([FromBody] Guid Id)
         {
             try
             {
