@@ -4,6 +4,7 @@ using Masar.Infrastructure.ApplicationContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Masar.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250118213627_update-names")]
+    partial class updatenames
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -380,7 +383,7 @@ namespace Masar.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Role");
 
                     b.HasData(
                         new
@@ -617,7 +620,7 @@ namespace Masar.Infrastructure.Migrations
 
                     b.HasIndex("TripId");
 
-                    b.ToTable("TripPhotos");
+                    b.ToTable("TripPhoto");
                 });
 
             modelBuilder.Entity("Masar.Domain.Entities.UserTrip", b =>
@@ -665,7 +668,7 @@ namespace Masar.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserTrips");
+                    b.ToTable("UserTrip");
                 });
 
             modelBuilder.Entity("Masar.Domain.Entities.UserTripStatusHistory", b =>

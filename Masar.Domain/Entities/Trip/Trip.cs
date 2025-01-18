@@ -24,10 +24,8 @@ namespace Masar.Domain.Entities
         public int MaxReservations { get; set; }
         public TripStatus TripStatus { get; set; }
         public DateTimeOffset Date { get; set; }  
-        public Guid AddedById { get; set; }
         public Guid CityId { get; set; }
         public virtual City City { get; set; }
-        public virtual ApplicationUser AddedBy { get; set; }
         public virtual ICollection<UserTrip> UserTrips { get; set; }
         public virtual ICollection<TripPhoto> TripPhotos { get; set; }
 

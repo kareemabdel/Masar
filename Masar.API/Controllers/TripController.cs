@@ -15,7 +15,7 @@ namespace Masar.Api.Controllers.LookupControllers
 {
     [Route("api/[controller]")]
     [ApiController]
-
+    [Authorize]
     public class TripController : ControllerBase
     {
         #region Fields
@@ -40,7 +40,7 @@ namespace Masar.Api.Controllers.LookupControllers
         #region Methods
         [HttpGet]
         [MapToApiVersion("1")]
-        public async Task<ActionResult<List<TripDto>>> GetTrip()
+        public async Task<ActionResult<List<TripDto>>> GetTrips()
         {
             try
             {
@@ -54,17 +54,16 @@ namespace Masar.Api.Controllers.LookupControllers
             }
         }
 
-
         [HttpPost]
         [MapToApiVersion("1")]
-        //[Authorize(Roles = Policies.Admin)]
+        [Authorize(Roles = Policies.Admin)]
         public async Task<ActionResult<TripDto>> CreateTrip([FromForm] AddTripDto objDto)
         {
             try
             {
-               // var userid= _currentUserService.GetUserId();
+                var userid= _currentUserService.GetUserId();
                 objDto.TripPhotos = await UploadFiles(objDto.TripPhotos);
-                var response = await _mediator.Send(new AddTripCommand() { obj = objDto,UserId=Guid.Parse("8667a9bf-c714-43cc-9a3c-fd3981c8a3d8") });
+                var response = await _mediator.Send(new AddTripCommand() { obj = objDto,UserId= userid });
                 return Ok(response);
             }
             catch (System.Exception ex)
@@ -76,7 +75,7 @@ namespace Masar.Api.Controllers.LookupControllers
 
         [HttpPost("Update")]
         [MapToApiVersion("1")]
-        //[Authorize(Roles = Policies.Admin)]
+        [Authorize(Roles = Policies.Admin)]
         public async Task<ActionResult<TripDto>> UpdateTrip( TripDto objDto)
         {
             try

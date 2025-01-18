@@ -2,20 +2,16 @@
 
 
 using AutoMapper;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Threading;
 using Masar.Application.DTOs;
 using Masar.Application.Interfaces;
 using MediatR;
-using AutoMapper.QueryableExtensions;
 using Masar.Domain.Entities;
 using Masar.Domain;
-using System.Linq;
 using Microsoft.EntityFrameworkCore;
 
 namespace Masar.Application.Queries
 {
+   
     public class GetAllTripQuery : IRequest<IEnumerable<TripDto>>
     {
         public bool IsAdmin { get; set; }
@@ -26,20 +22,30 @@ namespace Masar.Application.Queries
     {
         private readonly IMapper _mapper;
         private readonly IRepository<Trip> _TripRepository;
-
+        private readonly IApplicationDbContext _context;
         public GetAllTripQueryHandler(
             IMapper mapper,
-            IRepository<Trip> TripRepository
-            )
+            IRepository<Trip> TripRepository,
+            IApplicationDbContext context)
         {
             _mapper = mapper;
             _TripRepository = TripRepository;
+            _context = context;
         }
 
         public async Task<IEnumerable<TripDto>> Handle(GetAllTripQuery request, CancellationToken cancellationToken)
-        {            
-            var data =await _TripRepository.TableNoTracking.Include(e => e.TripPhotos).Include(w => w.City).Where(x => !x.IsDeleted && request.IsAdmin ? true : x.IsActive).ToListAsync();
-            return _mapper.Map<List<TripDto>>(data);
+        {
+            IQueryable<Trip> data = new List<Trip>().AsQueryable();
+             data =  _context.Trips;
+            if (request.IsAdmin)
+            {
+                data = data.Where(x => !x.IsDeleted);
+            }
+            else
+            {
+                data = data.Where(x => !x.IsDeleted && x.IsActive && x.TripStatus==Domain.Enums.TripStatus.Posted);
+            }
+            return _mapper.Map<List<TripDto>>(await data.ToListAsync());
         }
     }
 }

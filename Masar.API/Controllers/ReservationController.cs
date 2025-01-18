@@ -72,7 +72,7 @@ namespace Masar.Api.Controllers.LookupControllers
 
         [HttpPost("BookTrip")]
         [MapToApiVersion("1")]
-        [Authorize]
+        [Authorize(Roles=Policies.User)]
         public async Task<ActionResult<bool>> BookTrip(AddUserTripDto objDto)
         {
             try

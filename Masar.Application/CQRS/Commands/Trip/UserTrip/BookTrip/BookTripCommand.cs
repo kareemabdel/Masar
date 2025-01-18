@@ -46,19 +46,19 @@ namespace Masar.Application.Commands
         public async Task<bool> Handle(BookTripCommand request, CancellationToken cancellationToken)
         {
             // check if user book this trip before 
-            var check = await _servicesRepository.TableNoTracking.FirstOrDefaultAsync(e => e.UserId == request.obj.UserId && e.TripId == request.obj.TripId);
+            var check = await _servicesRepository.TableNoTracking.FirstOrDefaultAsync(e => e.UserId == request.UserId && e.TripId == request.obj.TripId);
             if (check!=null)
                 throw new Exception("Can't Reserve This trip again");
             
             var item = _mapper.Map<UserTrip>(request.obj);
             var tripcost=await _TripservicesRepository.TableNoTracking.Where(e => e.Id == request.obj.TripId).Select(r=>r.Price).FirstOrDefaultAsync();
             item.ReservationCost = tripcost * request.obj.NumberOfIndividuals;
-            item.Status = UserTripStatus.Booked;
-            item.UserTripStatusHistory.Add(new UserTripStatusHistory { Status =UserTripStatus.Booked, ChagedById = request.UserId });
+            item.Status = UserTripStatus.New;
+            item.UserTripStatusHistory.Add(new UserTripStatusHistory { Status =UserTripStatus.New, ChangedById = request.UserId });
            var res= _servicesRepository.Insert(item)==Result.Success;
             if (res)
             {
-                await SendEmailToAdmin();
+                //await SendEmailToAdmin();
                 return true;    
             }
             return false;

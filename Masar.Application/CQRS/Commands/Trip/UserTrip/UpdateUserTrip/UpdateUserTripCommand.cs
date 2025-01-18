@@ -54,7 +54,7 @@ namespace Masar.Application.Commands
                 if (item.Status!= UserTripStatus.Confirmed)
                 {
                     item.Status = request.obj.Status;
-                    item.UserTripStatusHistory.Add(new UserTripStatusHistory { Status = item.Status, ChagedById = request.UserId });
+                    item.UserTripStatusHistory.Add(new UserTripStatusHistory { Status = item.Status, ChangedById = request.UserId });
                     var res = _servicesRepository.Update(item);
                     if (res == Result.Success)
                     {  

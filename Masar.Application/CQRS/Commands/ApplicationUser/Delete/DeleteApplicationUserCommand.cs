@@ -35,7 +35,7 @@ namespace Masar.Application.Commands
                 //soft delete;
                 item.IsDeleted = true;
                 item.IsActive = false;
-                item.DeletionDate = DateTimeOffset.Now;
+                item.DeletedDate = DateTimeOffset.Now;
                 return (_servicesRepository.Update(item) == Result.Success);
             }
             throw new Exception($"Entitie with id {request.Id} not found");

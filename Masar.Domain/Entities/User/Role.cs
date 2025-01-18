@@ -7,7 +7,6 @@ using Masar.Domain.Entities.Comman;
 
 namespace Masar.Domain.Entities
 {
-    [Table("Role")]
     public class Role:BaseEntity
     {
         public Role()

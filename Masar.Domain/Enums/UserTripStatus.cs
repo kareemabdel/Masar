@@ -8,8 +8,11 @@ namespace Masar.Domain.Enums
 {
     public enum UserTripStatus
     {
-        Booked,
+        New=1,
+        Pending,
         Confirmed,
         Canceled,
+        Paid
+
     }
 }

@@ -41,7 +41,6 @@ namespace Masar.Application.Commands
         {
             var item = _mapper.Map<Trip>(request.obj);
             item.TripStatus = TripStatus.New;
-            item.AddedById= request.UserId;
             var result = _servicesRepository.InsertWithEntityReturn(item);
             //await SendEmailToUsers();
             return _mapper.Map<TripDto>(result);

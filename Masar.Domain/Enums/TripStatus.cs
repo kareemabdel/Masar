@@ -8,8 +8,10 @@ namespace Masar.Domain.Enums
 {
     public enum TripStatus
     {
-        New,
+        New=1,
+        Posted,
         Canceled,
         Suspended,
+        Archived
     }
 }

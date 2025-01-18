@@ -11,7 +11,7 @@ namespace Masar.Application.DTOs
     public class AddUserTripDto : IMapFrom<UserTrip>
     {
         public Guid TripId { get; set; }
-        public Guid UserId { get; set; }
+        //public Guid UserId { get; set; }
         public int NumberOfIndividuals { get; set; }
         public double ReservationCost { get; set; }
         public void Mapping(Profile profile)

@@ -16,8 +16,9 @@ namespace Masar.Application.Interfaces
         DbSet<Gallery> Galleries { get; set; }
         DbSet<CompanySetting> CompanySettings { get; set; }
         DbSet<ContactUs> ContactUs { get; set; }
-        DbSet<Trip> Trip { get; set; }
-       
+        DbSet<Trip> Trips { get; set; }
+        DbSet<UserTrip> UserTrips { get; set; }     
+        DbSet<TripPhoto> TripPhotos { get; set; }     
         DbSet<AuditTrial> AuditTrial { get; set; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
