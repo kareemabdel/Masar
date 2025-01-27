@@ -7,15 +7,14 @@ using Masar.Domain.Entities.Comman;
 
 namespace Masar.Domain.Entities
 {
-    public class Role:BaseEntity
+    public class Role:BaseEntity<int>
     {
         public Role()
         {
-            RoleUsers = new List<ApplicationUserRole>();
+            UserRoles = new List<ApplicationUserRole>();
         }
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
 
         //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         //public int RoleId { get; set; }
@@ -26,6 +25,6 @@ namespace Masar.Domain.Entities
         [MaxLength(20)]
         public string NameAr { get; set; }
 
-        public virtual ICollection<ApplicationUserRole> RoleUsers { get; set; }
+        public virtual ICollection<ApplicationUserRole> UserRoles { get; set; }
     }
 }

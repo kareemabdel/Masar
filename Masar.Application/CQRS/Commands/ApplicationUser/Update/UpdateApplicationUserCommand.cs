@@ -27,26 +27,26 @@ namespace Masar.Application.Commands
     public class UpdateApplicationUserCommandHandler : IRequestHandler<UpdateApplicationUserCommand, ApplicationUserDto>
     {        
         private readonly IMapper _mapper;
-        private readonly IRepository<Domain.Entities.ApplicationUser> _servicesRepository;
+        private readonly IApplicationDbContext _context;
 
         public UpdateApplicationUserCommandHandler(
-            IRepository<Domain.Entities.ApplicationUser> servicesRepository,
-            IMapper mapper
-            )
+            IMapper mapper,
+            IApplicationDbContext context)
         {
-            _servicesRepository = servicesRepository;            
             _mapper = mapper;
+            _context = context;
         }
         public async Task<ApplicationUserDto> Handle(UpdateApplicationUserCommand request, CancellationToken cancellationToken)
         {
-            var item =await _servicesRepository.Table.Include(w=>w.UserRoles).FirstOrDefaultAsync(e=>e.Id==request.obj.Id);
+            var item =await _context.Users.Include(w=>w.UserRoles)
+                .FirstOrDefaultAsync(e=>e.Id==request.obj.Id);
             if (item != null)
             {
                 item = _mapper.Map(request.obj, item);
                 if (!await IsUserExists(item))
                 {
-                    var result = _servicesRepository.UpdateWithEntityReturn(item);
-                    return _mapper.Map<ApplicationUserDto>(result);
+                    await _context.SaveChangesAsync(cancellationToken);
+                    return _mapper.Map<ApplicationUserDto>(item);
 
                 }
                 else
@@ -59,7 +59,7 @@ namespace Masar.Application.Commands
 
         public async Task<bool> IsUserExists(ApplicationUser applicationUser)
         {
-            var user = await _servicesRepository.TableNoTracking.Where(p =>
+            var user = await _context.Users.Where(p =>
             (p.Email == applicationUser.Email ||
             p.Phone == applicationUser.Phone ||
              p.UserName == applicationUser.UserName) && p.Id!=applicationUser.Id)

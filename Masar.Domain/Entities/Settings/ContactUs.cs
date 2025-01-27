@@ -7,9 +7,8 @@ using Masar.Domain.Entities.Comman;
 
 namespace Masar.Domain.Entities.Settings
 {
-    public class ContactUs:BaseEntity
+    public class ContactUs:BaseEntity<int>
     {
-        public Guid Id { get; set; }
         public string Name { get; set; }
         public string Phone { get; set; }
         public string Email { get; set; }

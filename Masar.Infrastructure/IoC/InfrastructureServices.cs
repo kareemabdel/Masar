@@ -5,9 +5,9 @@ using System.Text;
 using Masar.Application.Interfaces;
 using Masar.Domain;
 using Masar.Infrastructure.ApplicationContext;
-using Masar.Infrastructure.EfRepositories;
 using Masar.Infrastructure.Services;
 using Microsoft.Extensions.Options;
+using System.Runtime.InteropServices;
 
 namespace Masar.Infrastructure.IoC
 {
@@ -31,7 +31,7 @@ namespace Masar.Infrastructure.IoC
 
 
             services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>());
-            services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
+           // services.AddScoped(typeof(IRepository<,>), typeof(EfRepository<,>));
             services.AddScoped<ICurrentUserService, CurrentUserService>();
 
 

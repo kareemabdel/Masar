@@ -26,20 +26,19 @@ namespace Masar.Application.Queries
          IRequestHandler<GetApplicationUserByIdQuery, ApplicationUserDto>
     {
         private readonly IMapper _mapper;
-        private readonly IRepository<ApplicationUser> _ApplicationUserRepository;
+        private readonly IApplicationDbContext _context;
 
         public GetApplicationUserByIdQueryHandler(
-            IMapper mapper,
-            IRepository<ApplicationUser> ApplicationUserRepository
-            )
+            IMapper mapper
+, IApplicationDbContext context)
         {
             _mapper = mapper;
-            _ApplicationUserRepository = ApplicationUserRepository;
+            _context = context;
         }
 
         public async Task<ApplicationUserDto> Handle(GetApplicationUserByIdQuery request, CancellationToken cancellationToken)
         {            
-            var data = _ApplicationUserRepository.TableNoTracking.Include(e=>e.UserRoles).FirstOrDefaultAsync(x => x.Id==request.UserId);
+            var data = _context.Users.Include(e=>e.UserRoles).FirstOrDefaultAsync(x => x.Id==request.UserId);
             return _mapper.Map<ApplicationUserDto>(data.Result);
         }
     }

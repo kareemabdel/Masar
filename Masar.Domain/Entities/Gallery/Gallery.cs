@@ -2,9 +2,8 @@
 
 namespace Masar.Domain.Entities
 {
-    public class Gallery : BaseEntity
+    public class Gallery : BaseEntity<Guid>
     {    
-        public Guid Id { get; set; }
         public string  FilePath { get; set; }
         public string? Description { get; set; }
         public string? FileName { get; set; }

@@ -13,6 +13,5 @@ namespace Masar.Domain.Enums
         Confirmed,
         Canceled,
         Paid
-
     }
 }

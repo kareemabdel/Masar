@@ -3,9 +3,8 @@ using Masar.Domain.Enums;
 
 namespace Masar.Domain.Entities
 {
-    public class UserTripStatusHistory : BaseEntity
+    public class UserTripStatusHistory : BaseEntity<Guid>
     {
-        public Guid Id { get; set; }
         public Guid UserTripId { get; set; }
         public virtual UserTrip UserTrip { get; set; }
         public UserTripStatus Status { get; set; }

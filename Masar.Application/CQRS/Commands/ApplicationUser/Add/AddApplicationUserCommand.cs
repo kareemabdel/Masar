@@ -10,6 +10,7 @@ using Masar.Application.DTOs;
 using Microsoft.EntityFrameworkCore;
 using Masar.Domain;
 using Masar.Domain.Entities;
+using Masar.Application.Interfaces;
 
 namespace Masar.Application.Commands
 {
@@ -21,22 +22,23 @@ namespace Masar.Application.Commands
     public class AddApplicationUserCommandHandler : IRequestHandler<AddApplicationUserCommand, ApplicationUserDto>
     {
         private readonly IMapper _mapper;
-        private readonly IRepository<Domain.Entities.ApplicationUser> _applicationUserRepository;
+        private readonly IApplicationDbContext _context;
 
         public AddApplicationUserCommandHandler(
-            IRepository<Domain.Entities.ApplicationUser> applicationUserRepository,
             IMapper mapper
-            )
+,
+            IApplicationDbContext context)
         {
-            _applicationUserRepository = applicationUserRepository;
             _mapper = mapper;
+            _context = context;
         }
         public async Task<ApplicationUserDto> Handle(AddApplicationUserCommand request, CancellationToken cancellationToken)
         {
             var item = _mapper.Map<Domain.Entities.ApplicationUser>(request.obj);
             if (!await IsUserExists(item))
             {
-                var result = _applicationUserRepository.InsertWithEntityReturn(item);
+                var result = _context.Users.Add(item);
+                await _context.SaveChangesAsync(cancellationToken);
                 return _mapper.Map<ApplicationUserDto>(result);
             }
             else
@@ -47,7 +49,7 @@ namespace Masar.Application.Commands
 
         public async Task<bool> IsUserExists(ApplicationUser applicationUser)
         {
-            var user = await _applicationUserRepository.TableNoTracking.Where(p => p.Email == applicationUser.Email||
+            var user = await _context.Users.Where(p => p.Email == applicationUser.Email||
             p.Phone==applicationUser.Phone
             ||p.UserName==applicationUser.UserName).FirstOrDefaultAsync();
             if (user!=null)

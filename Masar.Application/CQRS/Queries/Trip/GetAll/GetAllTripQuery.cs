@@ -21,30 +21,22 @@ namespace Masar.Application.Queries
          IRequestHandler<GetAllTripQuery, IEnumerable<TripDto>>
     {
         private readonly IMapper _mapper;
-        private readonly IRepository<Trip> _TripRepository;
         private readonly IApplicationDbContext _context;
         public GetAllTripQueryHandler(
             IMapper mapper,
-            IRepository<Trip> TripRepository,
             IApplicationDbContext context)
         {
             _mapper = mapper;
-            _TripRepository = TripRepository;
             _context = context;
         }
 
         public async Task<IEnumerable<TripDto>> Handle(GetAllTripQuery request, CancellationToken cancellationToken)
         {
-            IQueryable<Trip> data = new List<Trip>().AsQueryable();
-             data =  _context.Trips;
-            if (request.IsAdmin)
+             var data =  _context.Trips.AsQueryable();
+            if (!request.IsAdmin)
             {
-                data = data.Where(x => !x.IsDeleted);
-            }
-            else
-            {
-                data = data.Where(x => !x.IsDeleted && x.IsActive && x.TripStatus==Domain.Enums.TripStatus.Posted);
-            }
+                data = data.Where(x =>  x.IsActive && x.TripStatus == Domain.Enums.TripStatus.Posted);
+            }   
             return _mapper.Map<List<TripDto>>(await data.ToListAsync());
         }
     }

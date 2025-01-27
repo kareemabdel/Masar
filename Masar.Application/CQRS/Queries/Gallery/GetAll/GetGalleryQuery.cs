@@ -25,20 +25,18 @@ namespace Masar.Application.Queries
          IRequestHandler<GetGalleryQuery, IEnumerable<GalleryDto>>
     {
         private readonly IMapper _mapper;
-        private readonly IRepository<Gallery> _GalleryRepository;
+        private readonly IApplicationDbContext _context;
 
         public GetGalleryQueryHandler(
-            IMapper mapper,
-            IRepository<Gallery> GalleryRepository
-            )
+            IMapper mapper,IApplicationDbContext context)
         {
             _mapper = mapper;
-            _GalleryRepository = GalleryRepository;
+            _context = context;
         }
 
         public async Task<IEnumerable<GalleryDto>> Handle(GetGalleryQuery request, CancellationToken cancellationToken)
         {            
-            var data =await _GalleryRepository.TableNoTracking.Where(x => !x.IsDeleted && request.IsAdmin ? true : x.IsActive).ToListAsync();
+            var data =await _context.Galleries.Where(x => request.IsAdmin ? true : x.IsActive).ToListAsync();
             return _mapper.Map<List<GalleryDto>>(data);
         }
     }

@@ -27,23 +27,23 @@ namespace Masar.Application.Commands
     public class DeleteTripCommandHandler : IRequestHandler<DeleteTripCommand, bool>
     {
         private readonly IMapper _mapper;
-        private readonly IRepository<Trip> _servicesRepository;
+        private readonly IApplicationDbContext _context;
 
-        public DeleteTripCommandHandler(IRepository<Trip> servicesRepository, IMapper mapper)
+        public DeleteTripCommandHandler( IMapper mapper, IApplicationDbContext context)
         {
-            _servicesRepository = servicesRepository;
             _mapper = mapper;
+            _context = context;
         }
         public async Task<bool> Handle(DeleteTripCommand request, CancellationToken cancellationToken)
         {
-            var item = _servicesRepository.GetById(request.Id);
+            var item = _context.Trips.FirstOrDefault(e => e.Id == request.Id);
             if (item != null)
             {
                 //soft delete;
                 item.IsDeleted = true;
                 item.IsActive = false;
                 item.DeletedDate = DateTimeOffset.Now;
-                return (_servicesRepository.Update(item) == Result.Success);
+                return (await _context.SaveChangesAsync(cancellationToken)>0);
             }
             throw new Exception($"Entitie with id {request.Id} not found");
         }

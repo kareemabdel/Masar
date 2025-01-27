@@ -7,9 +7,8 @@ using Masar.Domain.Entities.Comman;
 
 namespace Masar.Domain.Entities
 {
-    public class TripPhoto:BaseEntity
+    public class TripPhoto:BaseEntity<Guid>
     {
-        public Guid Id { get; set; }
         public string? Description { get; set; }
         public string? FileName { get; set; }
         public string FilePath { get; set; }

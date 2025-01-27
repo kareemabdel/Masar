@@ -54,7 +54,7 @@ namespace Masar.Api.Controllers.LookupControllers
             {
                 if (!_memoryCache.TryGetValue(CacheKeys.Cities, out IEnumerable<CitiesDto>? response))
                 {
-                   response = await _mediator.Send(new GetAllCitiesQuery() { IsAdmin = _userServices.IsAdmin() });
+                    response = await _mediator.Send(new GetAllCitiesQuery() { IsAdmin = _userServices.IsAdmin() });
                     var cacheEntryOptions = new MemoryCacheEntryOptions
                     {
                         AbsoluteExpiration = DateTime.Now.AddMinutes(5),

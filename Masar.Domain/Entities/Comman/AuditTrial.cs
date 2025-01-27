@@ -6,9 +6,8 @@ using System.Text;
 namespace Masar.Domain.Entities.Comman
 {
     [Table("AuditTrial")]
-    public class AuditTrial:BaseEntity
+    public class AuditTrial:BaseEntity<int>
     {
-        public Guid ID { get; set; }
         public string KeyFieldID { get; set; }
         public DateTimeOffset DateTimeStamp { get; set; }
         public string DataModel { get; set; }

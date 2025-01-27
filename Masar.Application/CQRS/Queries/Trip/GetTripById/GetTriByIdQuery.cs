@@ -26,20 +26,20 @@ namespace Masar.Application.Queries
          IRequestHandler<GetTripByIdQuery, TripDto>
     {
         private readonly IMapper _mapper;
-        private readonly IRepository<Trip> _TripRepository;
+        private readonly IApplicationDbContext _context;
 
         public GetTripByIdQueryHandler(
             IMapper mapper,
-            IRepository<Trip> TripRepository
+            IApplicationDbContext context
             )
         {
             _mapper = mapper;
-            _TripRepository = TripRepository;
+            _context = context;
         }
 
         public async Task<TripDto> Handle(GetTripByIdQuery request, CancellationToken cancellationToken)
         {            
-            var data =await _TripRepository.TableNoTracking.Include(e=>e.TripPhotos).Include(e=>e.City).FirstOrDefaultAsync(x => x.Id==request.TripId);
+            var data =await _context.Trips.Include(e=>e.TripPhotos).Include(e=>e.City).FirstOrDefaultAsync(x => x.Id==request.TripId);
             return _mapper.Map<TripDto>(data);
         }
     }

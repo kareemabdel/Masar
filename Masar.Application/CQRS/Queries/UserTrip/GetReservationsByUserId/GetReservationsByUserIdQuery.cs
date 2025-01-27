@@ -4,6 +4,7 @@ using MediatR;
 using Masar.Domain.Entities;
 using Masar.Domain;
 using Microsoft.EntityFrameworkCore;
+using Masar.Application.Interfaces;
 
 namespace Masar.Application.Queries
 {
@@ -16,20 +17,17 @@ namespace Masar.Application.Queries
          IRequestHandler<GetReservationsByUserIdQuery, IEnumerable<UserTripDto>>
     {
         private readonly IMapper _mapper;
-        private readonly IRepository<UserTrip> _TripRepository;
+        private readonly IApplicationDbContext _context;
 
         public GetReservationsByUserIdQueryHandler(
-            IMapper mapper,
-            IRepository<UserTrip> TripRepository
-            )
+            IMapper mapper            )
         {
             _mapper = mapper;
-            _TripRepository = TripRepository;
         }
 
         public async Task<IEnumerable<UserTripDto>> Handle(GetReservationsByUserIdQuery request, CancellationToken cancellationToken)
         {            
-            var data =await _TripRepository.TableNoTracking.Include(w => w.Trip).Where(x =>x.UserId==request.UserId).ToListAsync();
+            var data =await _context.UserTrips.Include(w => w.Trip).Where(x =>x.UserId==request.UserId).ToListAsync();
             return _mapper.Map<List<UserTripDto>>(data);
         }
     }

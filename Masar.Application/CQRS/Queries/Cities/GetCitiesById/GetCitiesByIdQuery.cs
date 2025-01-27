@@ -26,19 +26,19 @@ namespace Masar.Application.Queries
          IRequestHandler<GetCitiesByIdQuery, CitiesDto>
     {
         private readonly IMapper _mapper;
-        private readonly IRepository<City> _CitiesRepository;
+        private readonly IApplicationDbContext _context;
 
         public GetCitiesByIdQueryHandler(
             IMapper mapper,
-            IRepository<City> CitiesRepository)
+            IApplicationDbContext context)
         {
             _mapper = mapper;
-            _CitiesRepository = CitiesRepository;
+            _context = context;
         }
 
         public async Task<CitiesDto> Handle(GetCitiesByIdQuery request, CancellationToken cancellationToken)
         {            
-            var data = _CitiesRepository.TableNoTracking.FirstOrDefaultAsync(x => x.Id==request.CitiesId);
+            var data = _context.Cities.FirstOrDefaultAsync(x => x.Id==request.CitiesId);
             return _mapper.Map<CitiesDto>(data.Result);
         }
     }

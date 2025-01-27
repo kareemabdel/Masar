@@ -9,13 +9,12 @@ using Masar.Domain.Enums;
 
 namespace Masar.Domain.Entities
 {
-    public class UserTrip : BaseEntity
+    public class UserTrip : BaseEntity<Guid>
     {
         public UserTrip()
         {
             UserTripStatusHistory = new List<UserTripStatusHistory>();
         }
-        public Guid Id { get; set; }
         public Guid TripId { get; set; }
         public Guid UserId { get; set; }
         public int NumberOfIndividuals { get; set; }

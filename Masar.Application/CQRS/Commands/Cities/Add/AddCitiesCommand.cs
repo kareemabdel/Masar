@@ -25,22 +25,23 @@ namespace Masar.Application.Commands
     public class AddCitiesCommandHandler : IRequestHandler<AddCitiesCommand, CitiesDto>
     {
         private readonly IMapper _mapper;
-        private readonly IRepository<City> _servicesRepository;
+        private readonly IApplicationDbContext _context;
 
 
         public AddCitiesCommandHandler(
-            IRepository<City> servicesRepository,
             IMapper mapper
-            )
+,
+            IApplicationDbContext context)
         {
-            _servicesRepository = servicesRepository;
             _mapper = mapper;
+            _context = context;
         }
         public async Task<CitiesDto> Handle(AddCitiesCommand request, CancellationToken cancellationToken)
         {
             var item = _mapper.Map<City>(request.obj);
-            var result = _servicesRepository.InsertWithEntityReturn(item);
-            return _mapper.Map<CitiesDto>(result);
+            var result = _context.Cities.Add(item);
+            await _context.SaveChangesAsync(cancellationToken);
+            return _mapper.Map<CitiesDto>(result.Entity);
         }
     }
 }

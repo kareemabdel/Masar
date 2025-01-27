@@ -6,6 +6,7 @@ using Masar.Domain;
 using Masar.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Masar.EmailServices;
+using Masar.Application.Interfaces;
 
 namespace Masar.Application.Commands
 {
@@ -18,39 +19,36 @@ namespace Masar.Application.Commands
     public class AddTripCommandHandler : IRequestHandler<AddTripCommand, TripDto>
     {
         private readonly IMapper _mapper;
-        private readonly IRepository<Trip> _servicesRepository;
-        private readonly IRepository<ApplicationUser> _UserservicesRepository;
+        private readonly IApplicationDbContext _contex;
         private readonly IEmailSender _emailSender;
 
 
         public AddTripCommandHandler(
-            IRepository<Trip> servicesRepository,
-            IRepository<ApplicationUser> UserservicesRepository,
+           IApplicationDbContext contex,  
             IMapper mapper,
             IEmailSender emailSender
 
             )
         {
-            _servicesRepository = servicesRepository;
+            _contex = contex;
             _mapper = mapper;
-            _emailSender = emailSender;
-            _UserservicesRepository = UserservicesRepository;
-            
+            _emailSender = emailSender;            
         }
         public async Task<TripDto> Handle(AddTripCommand request, CancellationToken cancellationToken)
         {
             var item = _mapper.Map<Trip>(request.obj);
             item.TripStatus = TripStatus.New;
-            var result = _servicesRepository.InsertWithEntityReturn(item);
+            var result =await _contex.Trips.AddAsync(item);
+            await _contex.SaveChangesAsync(cancellationToken);
             //await SendEmailToUsers();
-            return _mapper.Map<TripDto>(result);
+            return _mapper.Map<TripDto>(result.Entity);
         }
 
         private async Task SendEmailToUsers()
         {
             // get all mail of users
             List<string> listofmails =new List<string>();
-             listofmails = await _UserservicesRepository.TableNoTracking.Where(w => w.UserRoles.Any(f=>f.RoleId== (int)UserTypes.User)).Select(d => d.Email).ToListAsync();
+             listofmails = await _contex.Users.Where(w => w.UserRoles.Any(f=>f.RoleId== (int)UserTypes.User)).Select(d => d.Email).ToListAsync();
             var message = new Message(listofmails, "Masar", "Hi, We are Pleased to inform u that A New Trip has been  Added ");
             _emailSender.SendEmail(message);
         }

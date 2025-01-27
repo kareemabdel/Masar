@@ -4,8 +4,9 @@ using System.Text;
 
 namespace Masar.Domain.Entities.Comman
 {
-    public class BaseEntity
+    public class BaseEntity<TId>
     {
+        public TId Id { get; set; }
         public bool IsActive { get; set; } = true;
         public DateTimeOffset CreatedDate { get; set; }
         public DateTimeOffset UpdatedDate { get; set; }

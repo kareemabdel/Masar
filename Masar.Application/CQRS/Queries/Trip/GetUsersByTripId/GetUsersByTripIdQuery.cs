@@ -26,20 +26,19 @@ namespace Masar.Application.Queries
          IRequestHandler<GetUsersByTripIdQuery, IEnumerable<ApplicationUserDto>>
     {
         private readonly IMapper _mapper;
-        private readonly IRepository<ApplicationUser> _TripRepository;
+        private readonly IApplicationDbContext _context;
 
         public GetUsersByTripIdQueryHandler(
             IMapper mapper,
-            IRepository<ApplicationUser> TripRepository
-            )
+            IApplicationDbContext context)
         {
             _mapper = mapper;
-            _TripRepository = TripRepository;
+            _context = context;
         }
 
         public async Task<IEnumerable<ApplicationUserDto>> Handle(GetUsersByTripIdQuery request, CancellationToken cancellationToken)
         {            
-            var data = await _TripRepository.TableNoTracking.Where(e=>e.UserTrips.Any(w=>w.TripId==request.TripId)).ToListAsync();
+            var data = await _context.Users.Where(e=>e.UserTrips.Any(w=>w.TripId==request.TripId)).ToListAsync();
             return _mapper.Map<List<ApplicationUserDto>>(data);
         }
     }

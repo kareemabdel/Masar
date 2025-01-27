@@ -6,6 +6,7 @@ using Masar.Domain.Entities;
 using Masar.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Masar.Application.Queries.Auth.Login;
+using Masar.Application.Interfaces;
 
 namespace Masar.Application.Commands
 {
@@ -17,15 +18,13 @@ namespace Masar.Application.Commands
     public class RegisterCommandHandler : IRequestHandler<RegisterCommand, LoginQueryResponse>
     {
         private readonly IMapper _mapper;
-        private readonly IRepository<Domain.Entities.ApplicationUser> _servicesRepository;
+        private readonly IApplicationDbContext _context;
 
         public RegisterCommandHandler(
-            IRepository<Domain.Entities.ApplicationUser> servicesRepository,
-            IMapper mapper
-            )
-        {
-            _servicesRepository = servicesRepository;
-            _mapper = mapper;
+            IMapper mapper,
+            IApplicationDbContext context)
+        {            _mapper = mapper;
+            _context = context;
         }
         public async Task<LoginQueryResponse?> Handle(RegisterCommand request, CancellationToken cancellationToken)
         {
@@ -34,7 +33,7 @@ namespace Masar.Application.Commands
             {
                 // add default role
                 item.UserRoles.Add(new ApplicationUserRole { RoleId = (int)UserTypes.User });
-                var result = _servicesRepository.InsertWithEntityReturn(item);
+                var result = _context.Users.Add(item);
                 return new LoginQueryResponse
                 {
                     IsSuccess = true,
@@ -54,7 +53,7 @@ namespace Masar.Application.Commands
 
         public async Task<bool> IsUserExists(ApplicationUser applicationUser)
         {
-            var user = await _servicesRepository.TableNoTracking.Where(p => p.Email  == applicationUser.Email 
+            var user = await _context.Users.Where(p => p.Email  == applicationUser.Email 
             || p.Phone  == applicationUser.Phone 
             || p.UserName  == applicationUser.UserName 
             ).FirstOrDefaultAsync();

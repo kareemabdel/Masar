@@ -31,32 +31,31 @@ namespace Masar.Application.Commands
     public class UpdateUserTripCommandHandler : IRequestHandler<UpdateUserTripCommand, bool>
     {        
         private readonly IMapper _mapper;
-        private readonly IRepository<UserTrip> _servicesRepository;
+        private readonly IApplicationDbContext _context;
         private readonly IEmailSender _emailSender;
         private readonly IStringLocalizer<SharedResource> _Localizer;
 
         public UpdateUserTripCommandHandler(
-            IRepository<UserTrip> servicesRepository,
             IMapper mapper,
             IEmailSender emailSender
-            )
+,
+            IApplicationDbContext context)
         {
-            _servicesRepository = servicesRepository;            
             _mapper = mapper;
             _emailSender = emailSender;
-                        
+            _context = context;
         }
         public async Task<bool> Handle(UpdateUserTripCommand request, CancellationToken cancellationToken)
         {
-            var item = _servicesRepository.Table.Include(e=>e.User).Include(w=>w.UserTripStatusHistory).FirstOrDefault(e=>e.Id==request.obj.Id);
+            var item = _context.UserTrips.Include(e=>e.User).Include(w=>w.UserTripStatusHistory).FirstOrDefault(e=>e.Id==request.obj.Id);
             if (item != null)
             {
                 if (item.Status!= UserTripStatus.Confirmed)
                 {
                     item.Status = request.obj.Status;
                     item.UserTripStatusHistory.Add(new UserTripStatusHistory { Status = item.Status, ChangedById = request.UserId });
-                    var res = _servicesRepository.Update(item);
-                    if (res == Result.Success)
+                    
+                    if (await _context.SaveChangesAsync(cancellationToken)>0)
                     {  
                             // send email to user to notify that trip reservation confirmed;
                             SendEmailToUser(item.User.Email, request.obj.Status);

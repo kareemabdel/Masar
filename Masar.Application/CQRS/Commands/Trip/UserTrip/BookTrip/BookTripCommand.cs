@@ -12,6 +12,7 @@ using Masar.Domain;
 using Masar.Domain.Enums;
 using Masar.EmailServices;
 using Microsoft.EntityFrameworkCore;
+using Masar.Application.Interfaces;
 
 namespace Masar.Application.Commands
 {
@@ -25,38 +26,34 @@ namespace Masar.Application.Commands
     {
         private readonly IMapper _mapper;
         private readonly IEmailSender _emailSender;
-        private readonly IRepository<UserTrip> _servicesRepository;
-        private readonly IRepository<ApplicationUser> _UserservicesRepository;
-        private readonly IRepository<Trip> _TripservicesRepository;
+        private readonly IApplicationDbContext _context;
+
 
 
         public BookTripCommandHandler(
-            IRepository<UserTrip> servicesRepository,
-            IRepository<ApplicationUser> userservicesRepository,
+         
             IMapper mapper,
             IEmailSender emailSender,
-            IRepository<Trip> tripservicesRepository)
+            IApplicationDbContext context)
         {
-            _servicesRepository = servicesRepository;
             _mapper = mapper;
-            _UserservicesRepository = userservicesRepository;
             _emailSender = emailSender;
-            _TripservicesRepository = tripservicesRepository;
+            _context = context;
         }
         public async Task<bool> Handle(BookTripCommand request, CancellationToken cancellationToken)
         {
             // check if user book this trip before 
-            var check = await _servicesRepository.TableNoTracking.FirstOrDefaultAsync(e => e.UserId == request.UserId && e.TripId == request.obj.TripId);
+            var check = await _context.UserTrips.FirstOrDefaultAsync(e => e.UserId == request.UserId && e.TripId == request.obj.TripId);
             if (check!=null)
                 throw new Exception("Can't Reserve This trip again");
             
             var item = _mapper.Map<UserTrip>(request.obj);
-            var tripcost=await _TripservicesRepository.TableNoTracking.Where(e => e.Id == request.obj.TripId).Select(r=>r.Price).FirstOrDefaultAsync();
+            var tripcost=await _context.Trips.Where(e => e.Id == request.obj.TripId).Select(r=>r.Price).FirstOrDefaultAsync();
             item.ReservationCost = tripcost * request.obj.NumberOfIndividuals;
             item.Status = UserTripStatus.New;
             item.UserTripStatusHistory.Add(new UserTripStatusHistory { Status =UserTripStatus.New, ChangedById = request.UserId });
-           var res= _servicesRepository.Insert(item)==Result.Success;
-            if (res)
+            _context.UserTrips.Add(item);
+            if (await _context.SaveChangesAsync(cancellationToken)>0)
             {
                 //await SendEmailToAdmin();
                 return true;    
@@ -64,17 +61,17 @@ namespace Masar.Application.Commands
             return false;
         }
 
-        private async Task SendEmailToAdmin()
-        {
-            // get  mail of admin
-            //List<string> listofmails = new List<string>();
-            var email = await _UserservicesRepository.TableNoTracking.Where(w => w.UserRoles.Any(f => f.RoleId == (int)UserTypes.Admin)).Select(d => d.Email).FirstOrDefaultAsync();
-            if (email!=null)
-            {
-            var message = new Message(new string[] {email }, "Masar", "New trip reservation submitted ");
-            _emailSender.SendEmail(message);
-            }
-        }
+        //private async Task SendEmailToAdmin()
+        //{
+        //    // get  mail of admin
+        //    //List<string> listofmails = new List<string>();
+        //    var email = await _UserservicesRepository.TableNoTracking.Where(w => w.UserRoles.Any(f => f.RoleId == (int)UserTypes.Admin)).Select(d => d.Email).FirstOrDefaultAsync();
+        //    if (email!=null)
+        //    {
+        //    var message = new Message(new string[] {email }, "Masar", "New trip reservation submitted ");
+        //    _emailSender.SendEmail(message);
+        //    }
+        //}
         
     }
 }

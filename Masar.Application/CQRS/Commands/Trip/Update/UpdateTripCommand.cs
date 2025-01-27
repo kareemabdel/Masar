@@ -27,25 +27,25 @@ namespace Masar.Application.Commands
     public class UpdateTripCommandHandler : IRequestHandler<UpdateTripCommand, TripDto>
     {        
         private readonly IMapper _mapper;
-        private readonly IRepository<Trip> _servicesRepository;
+        private readonly IApplicationDbContext _context;
 
         public UpdateTripCommandHandler(
-            IRepository<Trip> servicesRepository,
             IMapper mapper
-            )
+,
+            IApplicationDbContext context)
         {
-            _servicesRepository = servicesRepository;            
             _mapper = mapper;
+            _context = context;
         }
         public async Task<TripDto> Handle(UpdateTripCommand request, CancellationToken cancellationToken)
         {
-            var item = await _servicesRepository.Table.Include(e=>e.TripPhotos).FirstOrDefaultAsync(r=>r.Id==request.obj.Id);
+            var item = await _context.Trips.Include(e=>e.TripPhotos).FirstOrDefaultAsync(r=>r.Id==request.obj.Id);
             if (item != null)
             {
                 item = _mapper.Map(request.obj, item);
-                var result = _servicesRepository.UpdateWithEntityReturn(item);
+               await _context.SaveChangesAsync(cancellationToken);
 
-                return _mapper.Map<TripDto>(result);
+                return _mapper.Map<TripDto>(item);
             }
             throw new Exception($"Entitie with id {request.obj.Id} not found");
         }

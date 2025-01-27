@@ -8,6 +8,7 @@ using AutoMapper;
 using MediatR;
 using Masar.Domain;
 using Masar.Domain.Enums;
+using Masar.Application.Interfaces;
 
 namespace Masar.Application.Commands
 {
@@ -20,23 +21,24 @@ namespace Masar.Application.Commands
     public class DeleteApplicationUserCommandHandler : IRequestHandler<DeleteApplicationUserCommand, bool>
     {
         private readonly IMapper _mapper;
-        private readonly IRepository<Domain.Entities.ApplicationUser> _servicesRepository;
+        private readonly IApplicationDbContext _context;
 
-        public DeleteApplicationUserCommandHandler(IRepository<Domain.Entities.ApplicationUser> servicesRepository, IMapper mapper)
+        public DeleteApplicationUserCommandHandler( IMapper mapper, IApplicationDbContext context)
         {
-            _servicesRepository = servicesRepository;
             _mapper = mapper;
+            _context = context;
         }
         public async Task<bool> Handle(DeleteApplicationUserCommand request, CancellationToken cancellationToken)
         {
-            var item = _servicesRepository.GetById(request.Id);
+            var item = _context.Users.FirstOrDefault(e=>e.Id==request.Id);
             if (item != null)
             {
                 //soft delete;
                 item.IsDeleted = true;
                 item.IsActive = false;
                 item.DeletedDate = DateTimeOffset.Now;
-                return (_servicesRepository.Update(item) == Result.Success);
+
+                return (await _context.SaveChangesAsync(cancellationToken)>0);
             }
             throw new Exception($"Entitie with id {request.Id} not found");
         }

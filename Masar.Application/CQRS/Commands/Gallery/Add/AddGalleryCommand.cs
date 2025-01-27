@@ -4,6 +4,7 @@ using MediatR;
 using Masar.Application.DTOs;
 using Masar.Domain;
 using Masar.Domain.Enums;
+using Masar.Application.Interfaces;
 
 namespace Masar.Application.Commands
 {
@@ -16,25 +17,25 @@ namespace Masar.Application.Commands
     public class AddGalleryCommandHandler : IRequestHandler<AddGalleryCommand, bool>
     {
         private readonly IMapper _mapper;
-        private readonly IRepository<Gallery> _servicesRepository;
+        private readonly IApplicationDbContext _context;
 
 
         public AddGalleryCommandHandler(
-            IRepository<Gallery> servicesRepository,
             IMapper mapper
-
+,
+            IApplicationDbContext context
             )
         {
-            _servicesRepository = servicesRepository;
             _mapper = mapper;
-            
+            _context = context;
         }
         public async Task<bool> Handle(AddGalleryCommand request, CancellationToken cancellationToken)
         {
            
                 var items = _mapper.Map<List<Gallery>>(request.objs);
                 items.ForEach(e => e.AddedById = request.UserId);
-                return _servicesRepository.Insert(items) == Result.Success;
+                 _context.Galleries.AddRange(items);
+            return await _context.SaveChangesAsync(cancellationToken) > 0;
             
         }
 

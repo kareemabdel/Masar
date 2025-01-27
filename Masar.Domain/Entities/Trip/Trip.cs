@@ -7,15 +7,13 @@ namespace Masar.Domain.Entities
 {
 
 
-    public class Trip : BaseEntity
+    public class Trip : BaseEntity<Guid>
     {
         public Trip()
         {
             UserTrips =new List<UserTrip>();
             TripPhotos = new List<TripPhoto>();
         }
-
-        public Guid Id { get; set; }
         public string Name { get; set; }
         public int Days { get; set; }
         public double Price { get; set; }

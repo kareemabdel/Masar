@@ -26,24 +26,24 @@ namespace Masar.Application.Commands
     public class UpdateCitiesCommandHandler : IRequestHandler<UpdateCitiesCommand, CitiesDto>
     {        
         private readonly IMapper _mapper;
-        private readonly IRepository<City> _servicesRepository;
+        private readonly IApplicationDbContext _context;
 
         public UpdateCitiesCommandHandler(
-            IRepository<City> servicesRepository,
             IMapper mapper
-            )
+,
+            IApplicationDbContext context)
         {
-            _servicesRepository = servicesRepository;            
             _mapper = mapper;
+            _context = context;
         }
         public async Task<CitiesDto> Handle(UpdateCitiesCommand request, CancellationToken cancellationToken)
         {
-            var item = _servicesRepository.GetById(request.obj.Id);
+            var item = _context.Cities.FirstOrDefault(e=>e.Id== request.obj.Id);
             if (item != null)
             {
                 item = _mapper.Map(request.obj, item);
-                var result = _servicesRepository.UpdateWithEntityReturn(item);
-                return _mapper.Map<CitiesDto>(result);
+                await _context.SaveChangesAsync(cancellationToken);
+                return _mapper.Map<CitiesDto>(item);
             }
             throw new Exception($"Entitie with id {request.obj.Id} not found");
         }

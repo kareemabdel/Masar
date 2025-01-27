@@ -7,9 +7,7 @@ using Masar.Domain.Entities.Comman;
 
 namespace Masar.Domain.Entities
 {
-    [Table("ApplicationUser")]
-
-    public class ApplicationUser : BaseEntity
+    public class ApplicationUser : BaseEntity<Guid>
     {
         public ApplicationUser()
         {
@@ -18,7 +16,6 @@ namespace Masar.Domain.Entities
         }
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid Id { get; set; }
 
         public string UserName { get; set; }
         public string Password { get; set; }

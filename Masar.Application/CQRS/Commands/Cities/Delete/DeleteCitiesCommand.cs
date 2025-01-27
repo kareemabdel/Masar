@@ -27,23 +27,23 @@ namespace Masar.Application.Commands
     public class DeleteCitiesCommandHandler : IRequestHandler<DeleteCitiesCommand, bool>
     {
         private readonly IMapper _mapper;
-        private readonly IRepository<City> _servicesRepository;
+        private readonly IApplicationDbContext _context;
 
-        public DeleteCitiesCommandHandler(IRepository<City> servicesRepository, IMapper mapper)
+        public DeleteCitiesCommandHandler( IMapper mapper, IApplicationDbContext context)
         {
-            _servicesRepository = servicesRepository;
             _mapper = mapper;
+            _context = context;
         }
         public async Task<bool> Handle(DeleteCitiesCommand request, CancellationToken cancellationToken)
         {
-            var item = _servicesRepository.GetById(request.Id);
+            var item = _context.Cities.FirstOrDefault(e=>e.Id==request.Id);
             if (item != null)
             {
                 //soft delete;
                 item.IsDeleted = true;
                 item.IsActive = false;
                 item.DeletedDate = DateTimeOffset.Now;
-                return (_servicesRepository.Update(item) == Result.Success);
+                return (await _context.SaveChangesAsync(cancellationToken)>0);
             }
             throw new Exception($"Entitie with id {request.Id} not found");
         }
