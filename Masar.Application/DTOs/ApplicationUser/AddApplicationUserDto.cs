@@ -9,7 +9,7 @@ using Masar.Domain.Enums;
 
 namespace Masar.Application.DTOs
 {
-    public class AddApplicationUserDto : IMapFrom<ApplicationUser>
+    public class AddApplicationUserDto : IMapFrom<User>
     {
 
         [Required(ErrorMessage = "User Name is Required")]
@@ -24,7 +24,7 @@ namespace Masar.Application.DTOs
         public List<ApplicationUserRolesDto> UserRoles { get; set; }
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<AddApplicationUserDto, ApplicationUser>().ReverseMap();
+            profile.CreateMap<AddApplicationUserDto, User>().ReverseMap();
         }
     }
 }

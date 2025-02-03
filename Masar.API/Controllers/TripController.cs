@@ -155,23 +155,23 @@ namespace Masar.Api.Controllers.LookupControllers
                     string SavePath = _rootpath.WebRootPath + configpath;
                     foreach (var file in UploadedFiles)
                     {
-                        //if (file.Photo?.Length > 0)
-                        //{
-                            //var uniquefilename = ("Image_" + DateTime.Now.ToString() + DateTime.Now.Millisecond.ToString()).Replace("-", "").Replace(" ", "").Replace(":", "").Replace("/", "");
+                        if (file.Photo?.Length > 0)
+                        {
+                            var uniquefilename = ("Image_" + DateTime.Now.ToString() + DateTime.Now.Millisecond.ToString()).Replace("-", "").Replace(" ", "").Replace(":", "").Replace("/", "");
 
-                            //FileInfo fileInfo = new FileInfo(file.Photo.FileName);
-                            //string fileName = uniquefilename + fileInfo.Extension;
-                            //var filePath = Path.Combine(SavePath, fileName);
-                            //if (!Directory.Exists(SavePath))
-                            //{
-                            //    DirectoryInfo di = Directory.CreateDirectory(SavePath);
-                            //}
-                            //using (var stream = System.IO.File.Create(filePath))
-                            //{
-                            //    await file.Photo.CopyToAsync(stream);
-                            //}
-                            file.FilePath = "nbkjcvxkjdljgidfx";
-                        //}
+                            FileInfo fileInfo = new FileInfo(file.Photo.FileName);
+                            string fileName = uniquefilename + fileInfo.Extension;
+                            var filePath = Path.Combine(SavePath, fileName);
+                            if (!Directory.Exists(SavePath))
+                            {
+                                DirectoryInfo di = Directory.CreateDirectory(SavePath);
+                            }
+                            using (var stream = System.IO.File.Create(filePath))
+                            {
+                                await file.Photo.CopyToAsync(stream);
+                            }
+                            file.FilePath = Path.Combine(configpath, fileName);
+                        }
                     }
                     return UploadedFiles;
                 }

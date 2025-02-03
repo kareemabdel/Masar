@@ -8,23 +8,24 @@ using Masar.Domain.Entities.Settings;
 using Masar.Infrastructure.Seed;
 using Masar.Infrastructure.Services;
 using System.Linq.Expressions;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Masar.Infrastructure.ApplicationContext
 {
     public class ApplicationDbContext : DbContext, IApplicationDbContext
     {
-        //private readonly ICurrentUserService _currentUserService;
+        private readonly IServiceProvider _serviceProvider;
         public ApplicationDbContext(
-           DbContextOptions<ApplicationDbContext> options/*, ICurrentUserService currentUserService*/) : base(options)
+           DbContextOptions<ApplicationDbContext> options, IServiceProvider serviceProvider) : base(options)
         {
-            //_currentUserService = currentUserService;
+            _serviceProvider = serviceProvider;
         }
 
 
         public virtual DbSet<City> Cities { get; set; }
-        public DbSet<ApplicationUser> Users { get; set; }
+        public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
-        public DbSet<ApplicationUserRole> UserRoles { get; set; }   
+        public DbSet<UserRole> UserRoles { get; set; }   
         public DbSet<Gallery> Galleries { get; set; }
         public DbSet<CompanySetting> CompanySettings { get; set; }
         public DbSet<ContactUs> ContactUs { get; set; }
@@ -36,6 +37,8 @@ namespace Masar.Infrastructure.ApplicationContext
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
+            //var currentUserService = _serviceProvider.GetRequiredService<ICurrentUserService>();
+
             foreach (var entry in ChangeTracker.Entries())
             {
                 // Check if the entity inherits from BaseEntity<>
@@ -57,7 +60,7 @@ namespace Masar.Infrastructure.ApplicationContext
                     {
                         case EntityState.Added:
                             entity.CreatedDate = DateTimeOffset.UtcNow;
-                            // entity.CreatedBy = _currentUserService.GetUserId(); // Uncomment if applicable
+                            //entity.CreatedBy = _currentUserService.GetUserId(); // Uncomment if applicable
                             break;
 
                         case EntityState.Modified:
@@ -91,7 +94,22 @@ namespace Masar.Infrastructure.ApplicationContext
                     modelBuilder.Entity(entityType.ClrType).HasQueryFilter(filter);
                 }
             }
-           
+
+            modelBuilder.Entity<UserRole>()
+           .HasKey(aur => new { aur.RoleId, aur.UserId });
+
+            // Configure relationships
+            modelBuilder.Entity<UserRole>()
+                .HasOne(aur => aur.Role)
+                .WithMany(r => r.UserRoles) // Assuming Role has ApplicationUserRoles
+                .HasForeignKey(aur => aur.RoleId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<UserRole>()
+                .HasOne(aur => aur.User)
+                .WithMany(u => u.UserRoles) // Assuming ApplicationUser has ApplicationUserRoles
+                .HasForeignKey(aur => aur.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<UserTrip>()
                 .HasOne(g => g.Trip)

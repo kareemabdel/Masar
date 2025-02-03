@@ -22,131 +22,6 @@ namespace Masar.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Masar.Domain.Entities.ApplicationUser", b =>
-                {
-                    b.Property<string>("UserName")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTimeOffset>("CreatedDate")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<DateTimeOffset?>("DeletedDate")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Phone")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTimeOffset>("UpdatedDate")
-                        .HasColumnType("datetimeoffset");
-
-                    b.HasKey("UserName");
-
-                    b.ToTable("Users");
-
-                    b.HasData(
-                        new
-                        {
-                            UserName = "admin",
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            Email = "admin@company.com",
-                            Id = new Guid("8667a9bf-c714-43cc-9a3c-fd3981c8a3d8"),
-                            IsActive = true,
-                            IsDeleted = false,
-                            Name = "Admin admin ",
-                            Password = "iBbtmDi0qFeHHFgh+IXz5GklG0Jqy75i81vlpg136MY=",
-                            Phone = "11111111111",
-                            UpdatedDate = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0))
-                        });
-                });
-
-            modelBuilder.Entity("Masar.Domain.Entities.ApplicationUserRole", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ApplicationUserUserName")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTimeOffset>("CreatedDate")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<DateTimeOffset?>("DeletedDate")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("RoleId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("RoleName")
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<DateTimeOffset>("UpdatedDate")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ApplicationUserUserName");
-
-                    b.HasIndex("RoleName");
-
-                    b.ToTable("UserRoles");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            IsActive = true,
-                            IsDeleted = false,
-                            RoleId = 1,
-                            UpdatedDate = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            UserId = new Guid("8667a9bf-c714-43cc-9a3c-fd3981c8a3d8")
-                        });
-                });
-
             modelBuilder.Entity("Masar.Domain.Entities.City", b =>
                 {
                     b.Property<Guid>("Id")
@@ -323,10 +198,6 @@ namespace Masar.Infrastructure.Migrations
                     b.Property<Guid>("AddedById")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("AddedByUserName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
@@ -357,17 +228,18 @@ namespace Masar.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AddedByUserName");
+                    b.HasIndex("AddedById");
 
                     b.ToTable("Galleries");
                 });
 
             modelBuilder.Entity("Masar.Domain.Entities.Role", b =>
                 {
-                    b.Property<string>("Name")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
@@ -378,14 +250,16 @@ namespace Masar.Infrastructure.Migrations
                     b.Property<DateTimeOffset?>("DeletedDate")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("NameAr")
                         .IsRequired()
@@ -395,30 +269,30 @@ namespace Masar.Infrastructure.Migrations
                     b.Property<DateTimeOffset>("UpdatedDate")
                         .HasColumnType("datetimeoffset");
 
-                    b.HasKey("Name");
+                    b.HasKey("Id");
 
                     b.ToTable("Roles");
 
                     b.HasData(
                         new
                         {
-                            Name = "Admin",
+                            Id = 1,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             CreatedDate = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            Id = 1,
                             IsActive = true,
                             IsDeleted = false,
+                            Name = "Admin",
                             NameAr = "مدير",
                             UpdatedDate = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0))
                         },
                         new
                         {
-                            Name = "User",
+                            Id = 2,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             CreatedDate = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            Id = 2,
                             IsActive = true,
                             IsDeleted = false,
+                            Name = "User",
                             NameAr = "مستخدم",
                             UpdatedDate = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0))
                         });
@@ -641,6 +515,117 @@ namespace Masar.Infrastructure.Migrations
                     b.ToTable("TripPhotos");
                 });
 
+            modelBuilder.Entity("Masar.Domain.Entities.User", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("CreatedDate")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("DeletedDate")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset>("UpdatedDate")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("8667a9bf-c714-43cc-9a3c-fd3981c8a3d8"),
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
+                            Email = "admin@company.com",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Name = "Admin admin ",
+                            Password = "iBbtmDi0qFeHHFgh+IXz5GklG0Jqy75i81vlpg136MY=",
+                            Phone = "11111111111",
+                            UpdatedDate = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
+                            UserName = "admin"
+                        });
+                });
+
+            modelBuilder.Entity("Masar.Domain.Entities.UserRole", b =>
+                {
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("CreatedDate")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("DeletedDate")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset>("UpdatedDate")
+                        .HasColumnType("datetimeoffset");
+
+                    b.HasKey("RoleId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            RoleId = 1,
+                            UserId = new Guid("8667a9bf-c714-43cc-9a3c-fd3981c8a3d8"),
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
+                            IsActive = true,
+                            IsDeleted = false,
+                            UpdatedDate = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0))
+                        });
+                });
+
             modelBuilder.Entity("Masar.Domain.Entities.UserTrip", b =>
                 {
                     b.Property<Guid>("Id")
@@ -680,15 +665,11 @@ namespace Masar.Infrastructure.Migrations
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("TripId");
 
-                    b.HasIndex("UserName");
+                    b.HasIndex("UserId");
 
                     b.ToTable("UserTrips");
                 });
@@ -701,10 +682,6 @@ namespace Masar.Infrastructure.Migrations
 
                     b.Property<Guid>("ChangedById")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("ChangedByUserName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
@@ -732,29 +709,18 @@ namespace Masar.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ChangedByUserName");
+                    b.HasIndex("ChangedById");
 
                     b.HasIndex("UserTripId");
 
                     b.ToTable("UserTripStatusHistory");
                 });
 
-            modelBuilder.Entity("Masar.Domain.Entities.ApplicationUserRole", b =>
-                {
-                    b.HasOne("Masar.Domain.Entities.ApplicationUser", null)
-                        .WithMany("UserRoles")
-                        .HasForeignKey("ApplicationUserUserName");
-
-                    b.HasOne("Masar.Domain.Entities.Role", null)
-                        .WithMany("UserRoles")
-                        .HasForeignKey("RoleName");
-                });
-
             modelBuilder.Entity("Masar.Domain.Entities.Gallery", b =>
                 {
-                    b.HasOne("Masar.Domain.Entities.ApplicationUser", "AddedBy")
+                    b.HasOne("Masar.Domain.Entities.User", "AddedBy")
                         .WithMany()
-                        .HasForeignKey("AddedByUserName")
+                        .HasForeignKey("AddedById")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -783,6 +749,25 @@ namespace Masar.Infrastructure.Migrations
                     b.Navigation("Trip");
                 });
 
+            modelBuilder.Entity("Masar.Domain.Entities.UserRole", b =>
+                {
+                    b.HasOne("Masar.Domain.Entities.Role", "Role")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Masar.Domain.Entities.User", "User")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Masar.Domain.Entities.UserTrip", b =>
                 {
                     b.HasOne("Masar.Domain.Entities.Trip", "Trip")
@@ -791,9 +776,9 @@ namespace Masar.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Masar.Domain.Entities.ApplicationUser", "User")
+                    b.HasOne("Masar.Domain.Entities.User", "User")
                         .WithMany("UserTrips")
-                        .HasForeignKey("UserName")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -804,9 +789,9 @@ namespace Masar.Infrastructure.Migrations
 
             modelBuilder.Entity("Masar.Domain.Entities.UserTripStatusHistory", b =>
                 {
-                    b.HasOne("Masar.Domain.Entities.ApplicationUser", "ChangedBy")
+                    b.HasOne("Masar.Domain.Entities.User", "ChangedBy")
                         .WithMany()
-                        .HasForeignKey("ChangedByUserName")
+                        .HasForeignKey("ChangedById")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -821,13 +806,6 @@ namespace Masar.Infrastructure.Migrations
                     b.Navigation("UserTrip");
                 });
 
-            modelBuilder.Entity("Masar.Domain.Entities.ApplicationUser", b =>
-                {
-                    b.Navigation("UserRoles");
-
-                    b.Navigation("UserTrips");
-                });
-
             modelBuilder.Entity("Masar.Domain.Entities.Role", b =>
                 {
                     b.Navigation("UserRoles");
@@ -836,6 +814,13 @@ namespace Masar.Infrastructure.Migrations
             modelBuilder.Entity("Masar.Domain.Entities.Trip", b =>
                 {
                     b.Navigation("TripPhotos");
+
+                    b.Navigation("UserTrips");
+                });
+
+            modelBuilder.Entity("Masar.Domain.Entities.User", b =>
+                {
+                    b.Navigation("UserRoles");
 
                     b.Navigation("UserTrips");
                 });

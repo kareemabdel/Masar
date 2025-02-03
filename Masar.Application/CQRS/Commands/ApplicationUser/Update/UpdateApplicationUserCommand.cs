@@ -57,7 +57,7 @@ namespace Masar.Application.Commands
             throw new Exception($"Entitie with id {request.obj.Id} not found");
         }
 
-        public async Task<bool> IsUserExists(ApplicationUser applicationUser)
+        public async Task<bool> IsUserExists(User applicationUser)
         {
             var user = await _context.Users.Where(p =>
             (p.Email == applicationUser.Email ||

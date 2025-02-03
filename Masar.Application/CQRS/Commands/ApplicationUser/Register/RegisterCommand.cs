@@ -28,11 +28,11 @@ namespace Masar.Application.Commands
         }
         public async Task<LoginQueryResponse?> Handle(RegisterCommand request, CancellationToken cancellationToken)
         {
-            var item = _mapper.Map<ApplicationUser>(request.obj);
+            var item = _mapper.Map<User>(request.obj);
             if (!await IsUserExists(item))
             {
                 // add default role
-                item.UserRoles.Add(new ApplicationUserRole { RoleId = (int)UserTypes.User });
+                item.UserRoles.Add(new UserRole { RoleId = (int)UserTypes.User });
                 var result = _context.Users.Add(item);
                 return new LoginQueryResponse
                 {
@@ -51,7 +51,7 @@ namespace Masar.Application.Commands
             }
         }
 
-        public async Task<bool> IsUserExists(ApplicationUser applicationUser)
+        public async Task<bool> IsUserExists(User applicationUser)
         {
             var user = await _context.Users.Where(p => p.Email  == applicationUser.Email 
             || p.Phone  == applicationUser.Phone 

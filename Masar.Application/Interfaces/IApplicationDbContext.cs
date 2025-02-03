@@ -10,9 +10,9 @@ namespace Masar.Application.Interfaces
     {
 
         DbSet<City> Cities { get; set; }
-        DbSet<ApplicationUser> Users { get; set; }
+        DbSet<User> Users { get; set; }
         DbSet<Role> Roles { get; set; }
-        DbSet<ApplicationUserRole> UserRoles { get; set; }    
+        DbSet<UserRole> UserRoles { get; set; }    
         DbSet<Gallery> Galleries { get; set; }
         DbSet<CompanySetting> CompanySettings { get; set; }
         DbSet<ContactUs> ContactUs { get; set; }

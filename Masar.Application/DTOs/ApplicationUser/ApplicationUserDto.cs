@@ -8,7 +8,7 @@ using Masar.Domain.Entities;
 
 namespace Masar.Application.DTOs
 {
-    public class ApplicationUserDto : IMapFrom<ApplicationUser>
+    public class ApplicationUserDto : IMapFrom<User>
     {
         public Guid Id { get; set; }
         public string UserName { get; set; }
@@ -18,7 +18,7 @@ namespace Masar.Application.DTOs
         public List<ApplicationUserRolesDto>? UserRoles { get; set; }
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<ApplicationUserDto, ApplicationUser>().ReverseMap();
+            profile.CreateMap<ApplicationUserDto, User>().ReverseMap();
         }
     }
 }

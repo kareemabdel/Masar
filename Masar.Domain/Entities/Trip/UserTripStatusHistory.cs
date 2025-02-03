@@ -9,6 +9,6 @@ namespace Masar.Domain.Entities
         public virtual UserTrip UserTrip { get; set; }
         public UserTripStatus Status { get; set; }
         public Guid ChangedById { get; set; }
-        public virtual ApplicationUser ChangedBy { get; set; }
+        public virtual User ChangedBy { get; set; }
     }
 }

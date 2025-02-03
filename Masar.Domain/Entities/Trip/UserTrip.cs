@@ -21,7 +21,7 @@ namespace Masar.Domain.Entities
         public double ReservationCost { get; set; }
         public UserTripStatus Status { get; set; }
         public virtual Trip Trip { get; set; }
-        public virtual ApplicationUser User { get; set; }
+        public virtual User User { get; set; }
         public virtual ICollection<UserTripStatusHistory> UserTripStatusHistory { get; set; }
     }
 }

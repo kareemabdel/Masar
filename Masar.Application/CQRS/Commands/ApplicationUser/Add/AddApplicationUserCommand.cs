@@ -34,7 +34,7 @@ namespace Masar.Application.Commands
         }
         public async Task<ApplicationUserDto> Handle(AddApplicationUserCommand request, CancellationToken cancellationToken)
         {
-            var item = _mapper.Map<Domain.Entities.ApplicationUser>(request.obj);
+            var item = _mapper.Map<Domain.Entities.User>(request.obj);
             if (!await IsUserExists(item))
             {
                 var result = _context.Users.Add(item);
@@ -47,7 +47,7 @@ namespace Masar.Application.Commands
             }
         }
 
-        public async Task<bool> IsUserExists(ApplicationUser applicationUser)
+        public async Task<bool> IsUserExists(User applicationUser)
         {
             var user = await _context.Users.Where(p => p.Email == applicationUser.Email||
             p.Phone==applicationUser.Phone

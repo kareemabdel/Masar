@@ -9,7 +9,7 @@ using Masar.Domain.Entities;
 
 namespace Masar.Application.DTOs
 {
-    public class RegisterDto : IMapFrom<ApplicationUser>
+    public class RegisterDto : IMapFrom<User>
     {
         [Required(ErrorMessage = "User Name is Required")]
         public string UserName { get; set; }
@@ -24,7 +24,7 @@ namespace Masar.Application.DTOs
         public string Email { get; set; }
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<RegisterDto, ApplicationUser>().ReverseMap();
+            profile.CreateMap<RegisterDto, User>().ReverseMap();
         }
     }
 }

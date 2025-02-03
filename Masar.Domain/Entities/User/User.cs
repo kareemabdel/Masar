@@ -7,15 +7,15 @@ using Masar.Domain.Entities.Comman;
 
 namespace Masar.Domain.Entities
 {
-    public class ApplicationUser : BaseEntity<Guid>
+    public class User : BaseEntity<Guid>
     {
-        public ApplicationUser()
+        public User()
         {
-            UserRoles = new List<ApplicationUserRole>();
+            UserRoles = new List<UserRole>();
             UserTrips = new List<UserTrip>();
         }
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        //[Key]
+        //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 
         public string UserName { get; set; }
         public string Password { get; set; }
@@ -23,7 +23,7 @@ namespace Masar.Domain.Entities
         public string Name { get; set; }
         public string Phone { get; set; }
         public string Email { get; set; }
-        public virtual ICollection<ApplicationUserRole> UserRoles { get; set; }
+        public virtual ICollection<UserRole> UserRoles { get; set; }
         public virtual ICollection<UserTrip> UserTrips { get; set; }
     }
 }

@@ -4,6 +4,8 @@ using Masar.API.IoC;
 using Masar.Application.IoC;
 using Masar.Infrastructure.ApplicationContext;
 using Masar.Infrastructure.IoC;
+using Masar.Application.Interfaces;
+using Masar.Infrastructure.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +18,8 @@ builder.Services.ConfigureLoggerServices();
 builder.Services.ConfiguareLocalizationServices();
 builder.Services.AddAuthSrvices(builder.Configuration);
 builder.Services.AddMemoryCache();
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+builder.Services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>());
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

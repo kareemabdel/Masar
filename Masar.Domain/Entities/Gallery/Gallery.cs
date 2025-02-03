@@ -8,7 +8,7 @@ namespace Masar.Domain.Entities
         public string? Description { get; set; }
         public string? FileName { get; set; }
         public Guid AddedById { get; set; }
-        public virtual ApplicationUser AddedBy { get; set; }
+        public virtual User AddedBy { get; set; }
 
 
     }
