@@ -14,6 +14,7 @@ using Masar.Domain;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
+using System.ComponentModel.DataAnnotations;
 
 namespace Masar.Application.Queries
 {
@@ -36,7 +37,9 @@ namespace Masar.Application.Queries
         }
 
         public async Task<IEnumerable<CitiesDto>> Handle(GetAllCitiesQuery request, CancellationToken cancellationToken)
-        {  
+        {
+            var x = 5;
+            x = x / 0;
             var data =await _context.Cities.Where(x => request.IsAdmin? true:x.IsActive).ToListAsync();
             return _mapper.Map<List<CitiesDto>>(data);
         }

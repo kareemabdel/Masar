@@ -14,11 +14,11 @@ namespace Masar.Infrastructure.ApplicationContext
 {
     public class ApplicationDbContext : DbContext, IApplicationDbContext
     {
-        private readonly IServiceProvider _serviceProvider;
+        public IServiceProvider ServiceProvider { get; }
         public ApplicationDbContext(
            DbContextOptions<ApplicationDbContext> options, IServiceProvider serviceProvider) : base(options)
         {
-            _serviceProvider = serviceProvider;
+            ServiceProvider = serviceProvider;
         }
 
 
@@ -60,7 +60,12 @@ namespace Masar.Infrastructure.ApplicationContext
                     {
                         case EntityState.Added:
                             entity.CreatedDate = DateTimeOffset.UtcNow;
-                            //entity.CreatedBy = _currentUserService.GetUserId(); // Uncomment if applicable
+                            using (var scope = ServiceProvider.CreateScope())
+                            {
+                                var currentUserService = scope.ServiceProvider.GetRequiredService<ICurrentUserService>();
+                                entity.CreatedBy = currentUserService.GetUserId(); // Uncomment if applicable
+                            }
+                            
                             break;
 
                         case EntityState.Modified:

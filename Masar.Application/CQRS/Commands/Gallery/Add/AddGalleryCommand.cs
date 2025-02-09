@@ -33,7 +33,6 @@ namespace Masar.Application.Commands
         {
            
                 var items = _mapper.Map<List<Gallery>>(request.objs);
-                items.ForEach(e => e.AddedById = request.UserId);
                  _context.Galleries.AddRange(items);
             return await _context.SaveChangesAsync(cancellationToken) > 0;
             

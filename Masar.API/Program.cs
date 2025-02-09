@@ -6,6 +6,7 @@ using Masar.Infrastructure.ApplicationContext;
 using Masar.Infrastructure.IoC;
 using Masar.Application.Interfaces;
 using Masar.Infrastructure.Services;
+using Masar.API.Middleware.ExceptionHandling;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,10 +19,12 @@ builder.Services.ConfigureLoggerServices();
 builder.Services.ConfiguareLocalizationServices();
 builder.Services.AddAuthSrvices(builder.Configuration);
 builder.Services.AddMemoryCache();
-builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
-builder.Services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>());
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = "localhost:6379"; // Redis server connection
+});
 var app = builder.Build();
-
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 // Configure the HTTP request pipeline.
 
 app.UseRequestLocalization(app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);

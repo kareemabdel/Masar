@@ -51,7 +51,7 @@ namespace Masar.Application.Commands
             var tripcost=await _context.Trips.Where(e => e.Id == request.obj.TripId).Select(r=>r.Price).FirstOrDefaultAsync();
             item.ReservationCost = tripcost * request.obj.NumberOfIndividuals;
             item.Status = UserTripStatus.New;
-            item.UserTripStatusHistory.Add(new UserTripStatusHistory { Status =UserTripStatus.New, ChangedById = request.UserId });
+            item.UserTripStatusHistory.Add(new UserTripStatusHistory { Status =UserTripStatus.New});
             _context.UserTrips.Add(item);
             if (await _context.SaveChangesAsync(cancellationToken)>0)
             {

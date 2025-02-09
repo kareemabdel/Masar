@@ -8,27 +8,52 @@ namespace Masar.API.Middleware.ResponseHandling
     {
         public void OnActionExecuted(ActionExecutedContext context)
         {
-            if (context.Result.GetType() == typeof(Microsoft.AspNetCore.Mvc.FileStreamResult))
-
+           
+            
+          
+            if (context.Result is ObjectResult objectResult)
             {
+                // Wrap successful responses
+                context.Result = new ObjectResult(new ApiResponse
+                {
+                    Success = true,
+                    Message = "Operation successful",
+                    Content = objectResult.Value
+                })
+                {
+                    StatusCode = objectResult.StatusCode
+                };
+            } 
+            else if (context.Result is EmptyResult)
+            {
+                // Handle cases where no data is returned
+                context.Result = new ObjectResult(new ApiResponse
+                {
+                    Success = true,
+                    Message = "Operation successful",
+                    Content = null
+                })
+                {
+                    StatusCode = 204 // No Content
+                };
+            }
+            else if (context.Exception != null)
+            {
+                // Wrap unhandled exceptions (optional)
+                context.Result = new ObjectResult(new ApiResponse
+                {
+                    Success = false,
+                    Message = context.Exception.Message,
+                    Content = null
+                })
+                {
+                    StatusCode = 500
+                };
+
+                //context.ExceptionHandled = true;
+            }
+            else if (context.Result.GetType() == typeof(Microsoft.AspNetCore.Mvc.FileStreamResult))
                 return;
-            }
-            if (((IStatusCodeActionResult)context.Result) == null)
-                return;
-            var ActionResultStatusCode = ((IStatusCodeActionResult)context.Result).StatusCode;
-            var SuccessCodes = new List<int?> { 200, 201 };
-
-            if (SuccessCodes.Contains(ActionResultStatusCode))
-            {
-                var returnObj = ((ObjectResult)context.Result);
-                context.Result = new ResponseActionResult(new ResultResponse() { Content = returnObj.Value, IsSuccess = true, StatusCode = returnObj.StatusCode });
-            }
-            else
-            {
-                var returnObj = ((ObjectResult)context.Result);
-                context.Result = new ResponseActionResult(new ResultResponse() { Content = null, IsSuccess = false, StatusCode = returnObj.StatusCode, ResponseMessage = returnObj.Value.ToString() });
-            }
-
 
         }
 
@@ -38,34 +63,14 @@ namespace Masar.API.Middleware.ResponseHandling
     }
 
 
-    public class ResultResponse
+    public class ApiResponse
     {
-        public bool IsSuccess { get; set; }
-        public int? StatusCode { get; set; }
-        public string ResponseMessage { get; set; }
-        public Object Content { get; set; }
+        public bool Success { get; set; }
+        public string Message { get; set; }
+        public object Content { get; set; }
 
     }
-    public class ResponseActionResult : IActionResult
-    {
-        private readonly ResultResponse _responseMessage;
-        public ResponseActionResult()
-        {
-
-        }
-        public ResponseActionResult(ResultResponse responseMessage)
-        {
-            _responseMessage = responseMessage; // could add throw if null
-        }
-        public async Task ExecuteResultAsync(ActionContext context)
-        {
-            var objectResult = new ObjectResult(_responseMessage);
-
-            await objectResult.ExecuteResultAsync(context);
-        }
-
-    }
-
+ 
 }
 
    

@@ -28,10 +28,8 @@ namespace Masar.Infrastructure.IoC
                 options.UseSqlServer(mySqlConnectionStr);
             });
 
-           
-           // services.AddScoped(typeof(IRepository<,>), typeof(EfRepository<,>));
-            
-
+            services.AddScoped<ICurrentUserService, CurrentUserService>();
+            services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>());
 
 
             return services;

@@ -53,7 +53,7 @@ namespace Masar.Application.Commands
                 if (item.Status!= UserTripStatus.Confirmed)
                 {
                     item.Status = request.obj.Status;
-                    item.UserTripStatusHistory.Add(new UserTripStatusHistory { Status = item.Status, ChangedById = request.UserId });
+                    item.UserTripStatusHistory.Add(new UserTripStatusHistory { Status = item.Status });
                     
                     if (await _context.SaveChangesAsync(cancellationToken)>0)
                     {  
