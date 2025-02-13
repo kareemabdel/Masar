@@ -53,7 +53,7 @@ namespace Masar.Api.Controllers.LookupControllers
         #region Methods
         [HttpGet]
         [MapToApiVersion("1")]
-        public async Task<ActionResult<List<CitiesDto>>> GetCities()
+        public async Task<IActionResult> GetCities()
         {  
                 if (!_memoryCache.TryGetValue(CacheKeys.Cities, out IEnumerable<CitiesDto>? response))
                 {
@@ -71,7 +71,7 @@ namespace Masar.Api.Controllers.LookupControllers
 
         [HttpGet("GetCitiesDist")]
         [MapToApiVersion("1")]
-        public async Task<ActionResult<List<CitiesDto>>> GetCitiesDist()
+        public async Task<IActionResult> GetCitiesDist()
         {
            
                 string cacheKey = "cities_list";
@@ -104,74 +104,39 @@ namespace Masar.Api.Controllers.LookupControllers
         [HttpPost]
         [MapToApiVersion("1")]
         [Authorize(Roles = Policies.Admin)]
-        public async Task<ActionResult<CitiesDto>> CreateCities(AddCitiesDto objDto)
+        public async Task<IActionResult> CreateCities(AddCitiesDto objDto)
         {
-            try
-            {
                 var response = await _mediator.Send(new AddCitiesCommand() { obj = objDto });
-                return CreatedAtAction(nameof(GetCities), new { id = response.Id }, response);
-            }
-            catch (System.Exception ex)
-            {
-                _loggerManager.LogError($"Something Went Wrong: {ex}");
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
+                return CreatedAtAction(nameof(GetCities), new { id = response.Id }, response);    
         }
 
         [HttpPost("Update")]
         [MapToApiVersion("1")]
         [Authorize(Roles = Policies.Admin)]
-        public async Task<ActionResult<CitiesDto>> UpdateCities(CitiesDto objDto)
+        public async Task<IActionResult> UpdateCities(CitiesDto objDto)
         {
-            try
-            {
                 var response = await _mediator.Send(new UpdateCitiesCommand() { obj = objDto });
                 return Ok(response);
-            }
-            catch (System.Exception ex)
-            {
-                _loggerManager.LogError($"Something Went Wrong: {ex}");
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
         }
 
 
         [HttpGet("GetById")]
         [MapToApiVersion("1")]
         [Authorize]
-        public async Task<ActionResult<CitiesDto>> GetCitiesById([FromQuery] Guid Id)
+        public async Task<IActionResult> GetCitiesById([FromQuery] Guid Id)
         {
-            try
-            {
                 var response = await _mediator.Send(new GetCitiesByIdQuery() { CitiesId = Id });
                 return Ok(response);
-            }
-            catch (System.Exception ex)
-            {
-                _loggerManager.LogError($"Something Went Wrong: {ex}");
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
         }
 
         [HttpPost("Delete")]
         [MapToApiVersion("1")]
         [Authorize(Roles = Policies.Admin)]
-        public async Task<ActionResult<bool>> DeleteCities([FromBody] Guid Id)
+        public async Task<IActionResult> DeleteCities([FromBody] Guid Id)
         {
-            try
-            {
                 var response = await _mediator.Send(new DeleteCitiesCommand() { Id = Id });
                 return Ok(response);
-            }
-            catch (System.Exception ex)
-            {
-                _loggerManager.LogError($"Something Went Wrong: {ex}");
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
         }
-
-       
-
         #endregion
     }
 }

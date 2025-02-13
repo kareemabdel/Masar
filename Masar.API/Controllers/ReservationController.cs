@@ -39,72 +39,39 @@ namespace Masar.Api.Controllers.LookupControllers
         [HttpGet]
         [MapToApiVersion("1")]
         [Authorize(Roles = Policies.Admin)]
-        public async Task<ActionResult<List<UserTripDto>>> GetAllReservations()
+        public async Task<IActionResult> GetAllReservations()
         {
-            try
-            {
                 var response = await _mediator.Send(new GetAllReservationsQuery());
                 return Ok(response);
-            }
-            catch (System.Exception ex)
-            {
-                _loggerManager.LogError($"Something Went Wrong: {ex}");
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
         }
 
         [HttpGet("GetUsersByTripId")]
         [MapToApiVersion("1")]
         [Authorize(Roles = Policies.Admin)]
-        public async Task<ActionResult<List<ApplicationUserDto>>> GetUsersByTripId([FromQuery] Guid TripId)
+        public async Task<IActionResult> GetUsersByTripId([FromQuery] Guid TripId)
         {
-            try
-            {
                 var response = await _mediator.Send(new GetUsersByTripIdQuery() { TripId = TripId });
                 return Ok(response);
-            }
-            catch (System.Exception ex)
-            {
-                _loggerManager.LogError($"Something Went Wrong: {ex}");
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
         }
 
         [HttpPost("BookTrip")]
         [MapToApiVersion("1")]
         [Authorize(Roles=Policies.User)]
-        public async Task<ActionResult<bool>> BookTrip(AddUserTripDto objDto)
+        public async Task<IActionResult> BookTrip(AddUserTripDto objDto)
         {
-            try
-            {
                 var UserId = _currentUserService.GetUserId();
                 var response = await _mediator.Send(new BookTripCommand() { obj = objDto, UserId = UserId });
                 return Ok(response);
-            }
-            catch (System.Exception ex)
-            {
-                _loggerManager.LogError($"Something Went Wrong: {ex}");
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-
-            }
         }
 
         [HttpPost("Update")]
         [MapToApiVersion("1")]
         [Authorize]
-        public async Task<ActionResult<bool>> UpdateReservation(UpdateUserTripDto objDto)
+        public async Task<IActionResult> UpdateReservation(UpdateUserTripDto objDto)
         {
-            try
-            {
                 var UserId = _currentUserService.GetUserId();
                 var response = await _mediator.Send(new UpdateUserTripCommand() { obj = objDto, UserId = UserId });
                 return Ok(response);
-            }
-            catch (System.Exception ex)
-            {
-                _loggerManager.LogError($"Something Went Wrong: {ex}");
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
         }
 
 
@@ -112,18 +79,10 @@ namespace Masar.Api.Controllers.LookupControllers
         [HttpGet("GetReservationsByUserId")]
         [MapToApiVersion("1")]
         [Authorize]
-        public async Task<ActionResult<List<UserTripDto>>> GetReservationsByUserId([FromQuery] Guid UserId)
+        public async Task<IActionResult> GetReservationsByUserId([FromQuery] Guid UserId)
         {
-            try
-            {
                 var response = await _mediator.Send(new GetReservationsByUserIdQuery() { UserId = UserId });
                 return Ok(response);
-            }
-            catch (System.Exception ex)
-            {
-                _loggerManager.LogError($"Something Went Wrong: {ex}");
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
         }
 
         #endregion

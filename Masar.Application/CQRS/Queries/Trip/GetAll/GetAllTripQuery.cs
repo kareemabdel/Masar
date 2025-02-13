@@ -8,17 +8,21 @@ using MediatR;
 using Masar.Domain.Entities;
 using Masar.Domain;
 using Microsoft.EntityFrameworkCore;
+using Masar.Application.Models;
+using AutoMapper.QueryableExtensions;
 
 namespace Masar.Application.Queries
 {
    
-    public class GetAllTripQuery : IRequest<IEnumerable<TripDto>>
+    public class GetAllTripQuery : IRequest<PaginatedList<TripDto>>
     {
         public bool IsAdmin { get; set; }
+        public int page { get; set; }
+        public int size { get; set; }
     }
 
     public class GetAllTripQueryHandler :
-         IRequestHandler<GetAllTripQuery, IEnumerable<TripDto>>
+         IRequestHandler<GetAllTripQuery, PaginatedList<TripDto>>
     {
         private readonly IMapper _mapper;
         private readonly IApplicationDbContext _context;
@@ -30,14 +34,15 @@ namespace Masar.Application.Queries
             _context = context;
         }
 
-        public async Task<IEnumerable<TripDto>> Handle(GetAllTripQuery request, CancellationToken cancellationToken)
+        public async Task<PaginatedList<TripDto>> Handle(GetAllTripQuery request, CancellationToken cancellationToken)
         {
              var data =  _context.Trips.AsQueryable();
             if (!request.IsAdmin)
             {
                 data = data.Where(x =>  x.IsActive && x.TripStatus == Domain.Enums.TripStatus.Posted);
-            }   
-            return _mapper.Map<List<TripDto>>(await data.ToListAsync());
+            }
+            var mappedItems = data.ProjectTo<TripDto>(_mapper.ConfigurationProvider);
+            return await PaginatedList<TripDto>.CreateAsync(mappedItems, request.page, request.size);
         }
     }
 }

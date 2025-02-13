@@ -40,114 +40,65 @@ namespace Masar.Api.Controllers.LookupControllers
         #region Methods
         [HttpGet]
         [MapToApiVersion("1")]
-        public async Task<ActionResult<List<TripDto>>> GetTrips()
+        public async Task<IActionResult> GetTrips(int page = 1, int size = 10)
         {
-            try
-            {
-                var response = await _mediator.Send(new GetAllTripQuery() { IsAdmin= _currentUserService.IsAdmin()});
+                var response = await _mediator.Send(new GetAllTripQuery() { IsAdmin= _currentUserService.IsAdmin(),page=page,size=size});
                 return Ok(response);
-            }
-            catch (System.Exception ex)
-            {
-                _loggerManager.LogError($"Something Went Wrong: {ex}");
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
         }
 
         [HttpPost]
         [MapToApiVersion("1")]
         [Authorize(Roles = Policies.Admin)]
-        public async Task<ActionResult<TripDto>> CreateTrip([FromForm] AddTripDto objDto)
+        public async Task<IActionResult> CreateTrip([FromForm] AddTripDto objDto)
         {
-            try
-            {
                 var userid= _currentUserService.GetUserId();
                 objDto.TripPhotos = await UploadFiles(objDto.TripPhotos);
                 var response = await _mediator.Send(new AddTripCommand() { obj = objDto,UserId= userid });
                 return Ok(response);
-            }
-            catch (System.Exception ex)
-            {
-                _loggerManager.LogError($"Something Went Wrong: {ex}");
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
         }
 
         [HttpPost("Update")]
         [MapToApiVersion("1")]
         [Authorize(Roles = Policies.Admin)]
-        public async Task<ActionResult<TripDto>> UpdateTrip( TripDto objDto)
+        public async Task<IActionResult> UpdateTrip( TripDto objDto)
         {
-            try
-            {
                 
                 objDto.TripPhotos= await UploadFiles(objDto.TripPhotos);
                 var response = await _mediator.Send(new UpdateTripCommand() { obj = objDto });
                 return Ok(response);
-            }
-            catch (System.Exception ex)
-            {
-                _loggerManager.LogError($"Something Went Wrong: {ex}");
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
         }
 
         [HttpGet("GetTripById")]
         [MapToApiVersion("1")]
-        public async Task<ActionResult<TripDto>> GetTripById([FromQuery] Guid Id)
+        public async Task<IActionResult> GetTripById([FromQuery] Guid Id)
         {
-            try
-            {
                 var response = await _mediator.Send(new GetTripByIdQuery() { TripId = Id });
                 return Ok(response);
-            }
-            catch (System.Exception ex)
-            {
-                _loggerManager.LogError($"Something Went Wrong: {ex}");
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
         }
 
         [HttpPost("Delete")]
         [MapToApiVersion("1")]
         [Authorize(Roles = Policies.Admin)]
-        public async Task<ActionResult<bool>> DeleteTrip([FromBody] Guid Id)
+        public async Task<IActionResult> DeleteTrip([FromBody] Guid Id)
         {
-            try
-            {
                 var response = await _mediator.Send(new DeleteTripCommand() { Id = Id });
                 return Ok(response);
-            }
-            catch (System.Exception ex)
-            {
-                _loggerManager.LogError($"Something Went Wrong: {ex}");
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
         }
 
         [HttpGet("GetTripsByUserId")]
         [MapToApiVersion("1")]
         [Authorize]
-        public async Task<ActionResult<List<UserTripDto>>> GetTripsByUserId()
+        public async Task<IActionResult> GetTripsByUserId()
         {
-            try
-            {
                 var UserId = _currentUserService.GetUserId();
                 var response = await _mediator.Send(new GetTripsByUserIdQuery() { UserId = UserId });
                 return Ok(response);
-            }
-            catch (System.Exception ex)
-            {
-                _loggerManager.LogError($"Something Went Wrong: {ex}");
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
         }
 
 
         private async Task<List<TripPhotoDto>?> UploadFiles(List<TripPhotoDto>? UploadedFiles)
         {
-            try
-            {
+
                 if (UploadedFiles!=null)
                 {
                     //var tripphotos=new List<TripPhotoDto>();
@@ -179,12 +130,6 @@ namespace Masar.Api.Controllers.LookupControllers
                 {
                     return null;
                 }
-            }
-            catch (Exception ex)
-            {
-                _loggerManager.LogError($"Something Went Wrong: {ex}");
-                throw new Exception(ex.Message);
-            }
         }
 
         #endregion

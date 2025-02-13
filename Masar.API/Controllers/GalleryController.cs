@@ -38,18 +38,10 @@ namespace Masar.Api.Controllers.LookupControllers
         #region Methods
         [HttpGet]
         [MapToApiVersion("1")]
-        public async Task<ActionResult<List<GalleryDto>>> GetGallery()
+        public async Task<IActionResult> GetGallery(int page = 1, int size = 10)
         {
-            try
-            {
-                var response = await _mediator.Send(new GetGalleryQuery() { IsAdmin = _currentUserService.IsAdmin() }) ;
+            var response = await _mediator.Send(new GetGalleryQuery() { IsAdmin = _currentUserService.IsAdmin(), page = page, size = size });
                 return Ok(response);
-            }
-            catch (System.Exception ex)
-            {
-                _loggerManager.LogError($"Something Went Wrong: {ex}");
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
         }
 
         [HttpPost("Delete")]
@@ -57,8 +49,6 @@ namespace Masar.Api.Controllers.LookupControllers
         [Authorize(Roles = Policies.Admin)]
         public async Task<IActionResult> DeleteGallery([FromBody] DeleteGalleryDto obj)
         {
-            try
-            {
                 var fullPath =_rootpath.WebRootPath+ obj.FilePath;
                 if (System.IO.File.Exists(fullPath))
                 {
@@ -66,58 +56,33 @@ namespace Masar.Api.Controllers.LookupControllers
                 }
                 var response = await _mediator.Send(new DeleteGalleryCommand() { Id =obj.Id });
                 return Ok(response);
-            }
-            catch (System.Exception ex)
-            {
-                _loggerManager.LogError($"Something went wrong: {ex}");
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-
-            }
         }
 
         [HttpPost("AddToGallery")]
         [MapToApiVersion("1")]
         [Authorize(Roles = Policies.Admin)]
-        public async Task<ActionResult<TripDto>> AddToGallery([FromForm] List<GalleryDto> objsDto)
+        public async Task<IActionResult> AddToGallery([FromForm] List<GalleryDto> objsDto)
         {
-            try
-            {
                 var userid = _currentUserService.GetUserId();
                 objsDto = await UploadFiles(objsDto);
                 var response = await _mediator.Send(new AddGalleryCommand() { objs = objsDto, UserId = userid });
                 return Ok(response);
-            }
-            catch (System.Exception ex)
-            {
-                _loggerManager.LogError($"Something Went Wrong: {ex}");
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
         }
 
         [HttpPost("AddSinglePic")]
         [MapToApiVersion("1")]
         [Authorize(Roles = Policies.Admin)]
-        public async Task<ActionResult<TripDto>> AddSinglePic([FromForm] GalleryDto objsDto)
+        public async Task<IActionResult> AddSinglePic([FromForm] GalleryDto objsDto)
         {
-            try
-            {
                 var list = new List<GalleryDto> { objsDto };
                 var userid = _currentUserService.GetUserId();
                 list = await UploadFiles(list);
                 var response = await _mediator.Send(new AddGalleryCommand() { objs = list, UserId = userid });
                 return Ok(response);
-            }
-            catch (System.Exception ex)
-            {
-                _loggerManager.LogError($"Something Went Wrong: {ex}");
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
         }
 
         private async Task<List<GalleryDto>> UploadFiles(List<GalleryDto>? UploadedFiles)
         {
-            try
-            {
                 if (UploadedFiles!=null)
                 {
                     //var tripphotos=new List<TripPhotoDto>();
@@ -149,12 +114,6 @@ namespace Masar.Api.Controllers.LookupControllers
                 {
                     return new List<GalleryDto>();
                 }
-            }
-            catch (Exception ex)
-            {
-                _loggerManager.LogError($"Something went wrong: {ex}");
-                throw new Exception(ex.Message);
-            }
         }
 
         #endregion

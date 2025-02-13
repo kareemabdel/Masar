@@ -13,16 +13,20 @@ using Masar.Domain.Entities;
 using Masar.Domain;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using Masar.Application.Models;
+using Org.BouncyCastle.Utilities;
 
 namespace Masar.Application.Queries
 {
-    public class GetGalleryQuery : IRequest<IEnumerable<GalleryDto>>
+    public class GetGalleryQuery : IRequest<PaginatedList<GalleryDto>>
     {
         public bool IsAdmin { get; set; }
+        public int page { get; set; }
+        public int size { get; set; }
     }
 
     public class GetGalleryQueryHandler :
-         IRequestHandler<GetGalleryQuery, IEnumerable<GalleryDto>>
+         IRequestHandler<GetGalleryQuery, PaginatedList<GalleryDto>>
     {
         private readonly IMapper _mapper;
         private readonly IApplicationDbContext _context;
@@ -34,10 +38,11 @@ namespace Masar.Application.Queries
             _context = context;
         }
 
-        public async Task<IEnumerable<GalleryDto>> Handle(GetGalleryQuery request, CancellationToken cancellationToken)
+        public async Task<PaginatedList<GalleryDto>> Handle(GetGalleryQuery request, CancellationToken cancellationToken)
         {            
-            var data =await _context.Galleries.Where(x => request.IsAdmin ? true : x.IsActive).ToListAsync();
-            return _mapper.Map<List<GalleryDto>>(data);
+            var data = _context.Galleries.Where(x => request.IsAdmin ? true : x.IsActive);
+            var mappedItems = data.ProjectTo<GalleryDto>(_mapper.ConfigurationProvider);
+            return await PaginatedList<GalleryDto>.CreateAsync(mappedItems, request.page, request.size);
         }
     }
 }

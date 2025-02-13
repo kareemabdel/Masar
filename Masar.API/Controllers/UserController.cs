@@ -35,88 +35,48 @@ namespace Masar.Api.Controllers.LookupControllers
         [HttpGet]
         [MapToApiVersion("1")]
         [Authorize(Roles = Policies.Admin)]
-        public async Task<ActionResult<List<ApplicationUserDto>>> GetApplicationUser()
+        public async Task<IActionResult> GetApplicationUser()
         {
-            try
-            {
                 var response = await _mediator.Send(new GetAllApplicationUserQuery());
                 return Ok(response);
-            }
-            catch (System.Exception ex)
-            {
-                _loggerManager.LogError($"Something Went Wrong: {ex}");
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
         }
 
         [HttpPost]
         [MapToApiVersion("1")]
         [Authorize(Roles = Policies.Admin)]
-        public async Task<ActionResult<ApplicationUserDto>> CreateApplicationUser(AddApplicationUserDto objDto)
+        public async Task<IActionResult> CreateApplicationUser(AddApplicationUserDto objDto)
         {
-            try
-            {
                 objDto.Password = CryptoHelper.Encrypt(objDto.Password, _config["AppSettings:PasswordKey"]);
                 var response = await _mediator.Send(new AddApplicationUserCommand() { obj = objDto });
                 return Ok(response);
-            }
-            catch (System.Exception ex)
-            {
-                _loggerManager.LogError($"Something Went Wrong: {ex}");
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
         }
 
         [HttpPost("Update")]
         [MapToApiVersion("1")]
         [Authorize(Roles = Policies.Admin)]
-        public async Task<ActionResult<ApplicationUserDto>> UpdateApplicationUser(ApplicationUserDto objDto)
+        public async Task<IActionResult> UpdateApplicationUser(ApplicationUserDto objDto)
         {
-            try
-            {
                 var response = await _mediator.Send(new UpdateApplicationUserCommand() { obj = objDto });
                 return Ok(response);
-            }
-            catch (System.Exception ex)
-            {
-                _loggerManager.LogError($"Something Went Wrong: {ex}");
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
         }
 
 
         [HttpGet("GetById")]
         [MapToApiVersion("1")]
         [Authorize]
-        public async Task<ActionResult<ApplicationUserDto>> GetApplicationUserById([FromQuery] Guid Id)
+        public async Task<IActionResult> GetApplicationUserById([FromQuery] Guid Id)
         {
-            try
-            {
                 var response = await _mediator.Send(new GetApplicationUserByIdQuery() { UserId = Id });
                 return Ok(response);
-            }
-            catch (System.Exception ex)
-            {
-                _loggerManager.LogError($"Something Went Wrong: {ex}");
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
         }
 
         [HttpPost("Delete")]
         [MapToApiVersion("1")]
         [Authorize(Roles = Policies.Admin)]
-        public async Task<ActionResult<bool>> DeleteApplicationUser([FromBody] Guid Id)
+        public async Task<IActionResult> DeleteApplicationUser([FromBody] Guid Id)
         {
-            try
-            {
                 var response = await _mediator.Send(new DeleteApplicationUserCommand() { Id = Id });
                 return Ok(response);
-            }
-            catch (System.Exception ex)
-            {
-                _loggerManager.LogError($"Something Went Wrong: {ex}");
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
         }
 
        
